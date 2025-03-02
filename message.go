@@ -152,7 +152,9 @@ func (msg *Message) Unmarshal() []byte {
 	data = append(data, []byte(msg.YourIPAddr)...)
 	data = append(data, []byte(msg.ServerIPAddr)...)
 	data = append(data, []byte(msg.GatewayIPAddr)...)
-	data = append(data, []byte(msg.ClientHardwareAddr)...)
+        cHardwareAddr := [16]byte{}
+        copy(cHardwareAddr[:], []byte(msg.ClientHardwareAddr))
+        data = append(data, cHardwareAddr[:]...)
 	sHostname := [64]byte{}
 	copy(sHostname[:], msg.ServerHostname)
 	data = append(data, sHostname[:]...)
@@ -163,4 +165,16 @@ func (msg *Message) Unmarshal() []byte {
 	data = append(data, msg.Options.Unmarshal()...)
 
 	return data
+}
+
+func NewEmptyMessage() Message {
+        msg := Message{}
+        msg.ClientIPAddr = net.IPv4zero
+        msg.YourIPAddr = net.IPv4zero
+        msg.ServerIPAddr = net.IPv4zero
+        msg.GatewayIPAddr = net.IPv4zero
+        msg.ClientHardwareAddr = make(net.HardwareAddr, 6)
+        msg.Options = make(Options)
+
+        return msg
 }
