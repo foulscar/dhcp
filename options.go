@@ -69,7 +69,7 @@ func MarshalOptions(data []byte) (Options, []error) {
 			continue
 		}
 
-		optData, err := optCodeInfo.DataBuilder(data[i+2 : i+2+optLen])
+		optData, err := optCodeInfo.DataMarshaler(data[i+2 : i+2+optLen])
 		if err != nil {
 			errs = append(errs, err)
 			i += 1 + optLen

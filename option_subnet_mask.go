@@ -13,7 +13,7 @@ func (optD OptionDataSubnetMask) Raw() []byte {
 	return []byte(optD.Mask)
 }
 
-func BuildOptionDataSubnetMask(data []byte) (OptionData, error) {
+func MarshalOptionDataSubnetMask(data []byte) (OptionData, error) {
 	if len(data) != 4 {
 		return nil, errors.New("Data does not represent an ipv4 subnet mask")
 	}

@@ -34,7 +34,7 @@ func (optD OptionDataMessageType) Raw() []byte {
 	return []byte{byte(optD.Type)}
 }
 
-func BuildOptionDataMessageType(data []byte) (OptionData, error) {
+func MarshalOptionDataMessageType(data []byte) (OptionData, error) {
 	msgType := OptionMessageTypeCode(data[0])
 	_, exists := OptionMessageTypeCodeToString[msgType]
 	if !exists || len(data) > 1 {
@@ -42,4 +42,16 @@ func BuildOptionDataMessageType(data []byte) (OptionData, error) {
 	}
 
 	return OptionDataMessageType{Type: msgType}, nil
+}
+
+func NewOptionMessageType(msgType OptionMessageTypeCode) (Option, error) {
+        _, exists := OptionMessageTypeCodeToString[msgType]
+        if !exists {
+                return Option{}, errors.New("invalid message type")
+        }
+
+        return Option{
+                Code: OptionCodeMessageType,
+                Data: OptionDataMessageType{Type: msgType},
+        }, nil
 }

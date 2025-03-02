@@ -17,7 +17,7 @@ func (optD OptionDataParameterRequestList) Add(optC OptionCode) {
         optD.List = append(optD.List, optC)
 }
 
-func BuildOptionDataParameterRequestList(data []byte) (OptionData, error) {
+func MarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 	list := make([]OptionCode, len(data))
 	for i, b := range data {
 		list[i] = OptionCode(b)
