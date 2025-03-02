@@ -26,12 +26,11 @@ func (opt Option) String() string {
 func (opt Option) Unmarshal() []byte {
 	data := opt.Data.Raw()
 	length := len(data)
-	out := make([]byte, length+2)
+	out := make([]byte, 2)
 	out[0] = byte(opt.Code)
 	out[1] = byte(length)
-        copy(out[2:], data)
 
-	return data
+	return append(out, data...)
 }
 
 func (opts Options) Add(opt Option) {
