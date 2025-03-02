@@ -33,6 +33,10 @@ func (opt Option) Unmarshal() []byte {
 	return out
 }
 
+func (opts Options) Add(opt Option) {
+        opts[opt.Code] = opt
+}
+
 func (opts Options) Unmarshal() []byte {
 	var data []byte
 	for _, opt := range opts {
