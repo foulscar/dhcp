@@ -3,8 +3,11 @@ package dhcp
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"net"
 	"slices"
+	"strconv"
+	"strings"
 )
 
 type Message struct {
@@ -31,6 +34,11 @@ const (
 	BOOTPMessageTypeRequest BOOTPMessageType = 1
 	BOOTPMessageTypeReply   BOOTPMessageType = 2
 )
+
+var BOOTPMessageTypeToString map[BOOTPMessageType]string = map[BOOTPMessageType]string{
+	BOOTPMessageTypeRequest: "REQUEST",
+	BOOTPMessageTypeReply:   "REPLY",
+}
 
 type HardwareAddrType uint8
 
@@ -60,6 +68,62 @@ func IsEncodedMessage(data []byte) bool {
 	}
 
 	return true
+}
+
+func (msg Message) String() string {
+	var sb strings.Builder
+
+	sb.WriteString("BOOTP Message Type: ")
+	sb.WriteString(BOOTPMessageTypeToString[msg.BOOTPMessageType])
+
+	sb.WriteString("\nHardware Type: ")
+
+	sb.WriteString("\nHardware Address Length: ")
+	sb.WriteString(strconv.Itoa(int(msg.HardwareAddrLen)))
+
+	sb.WriteString("\nHops: ")
+	sb.WriteString(strconv.Itoa(int(msg.HopCount)))
+
+	sb.WriteString("\nTransactionID: ")
+	fmt.Fprintf(&sb, "%#x", msg.TransactionID)
+
+	sb.WriteString("\nSeconds Elapsed: ")
+	sb.WriteString(strconv.Itoa(int(msg.SecsElapsed)))
+
+	sb.WriteString("\nFlags: ")
+	fmt.Fprintf(&sb, "%#x", msg.Flags)
+
+	sb.WriteString("\nClient IP Address: ")
+	sb.WriteString(msg.ClientIPAddr.String())
+
+	sb.WriteString("\nYour IP Address: ")
+	sb.WriteString(msg.YourIPAddr.String())
+
+	sb.WriteString("\nServer IP Address: ")
+	sb.WriteString(msg.ServerIPAddr.String())
+
+	sb.WriteString("\nGateway IP Address: ")
+	sb.WriteString(msg.GatewayIPAddr.String())
+
+	sb.WriteString("\nClient Mac Address: ")
+	sb.WriteString(msg.ClientHardwareAddr.String())
+
+	sb.WriteString("\nServer Hostname: ")
+	fmt.Fprintf(&sb, "'%s'", msg.ServerHostname)
+
+	sb.WriteString("\nBoot Filename: ")
+	fmt.Fprintf(&sb, "'%s'", msg.ServerHostname)
+
+	sb.WriteString("\n\n--Options--\n")
+
+	for _, opt := range msg.Options {
+		fmt.Fprintf(&sb, "\n%s", OptionCodeToInfo[opt.Code].String)
+		fmt.Fprintf(&sb, " [%s]: ", strconv.Itoa(int(opt.Code)))
+		sb.WriteString(opt.Data.String())
+	}
+	fmt.Fprintf(&sb, "\nEND [%s]", strconv.Itoa(int(OptionCodeEnd)))
+
+	return sb.String()
 }
 
 func MarshalMessage(data []byte) (*Message, error) {
@@ -154,12 +218,12 @@ func (msg *Message) Unmarshal() []byte {
 	copy(data[44:108], msg.ServerHostname)
 	copy(data[108:236], msg.BootFilename)
 	copy(data[236:240], MagicCookie)
-        data = append(data, msg.Options.Unmarshal()...)
+	data = append(data, msg.Options.Unmarshal()...)
 
-        paddingLen := 0
-        if len(data) < 300 {
-                paddingLen = 300 - len(data)
-        }
+	paddingLen := 0
+	if len(data) < 300 {
+		paddingLen = 300 - len(data)
+	}
 
 	return append(data, make([]byte, paddingLen)...)
 }

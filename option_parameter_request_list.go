@@ -1,5 +1,9 @@
 package dhcp
 
+import (
+	"strings"
+)
+
 type OptionDataParameterRequestList struct {
 	List []OptionCode
 }
@@ -11,6 +15,21 @@ func (optD OptionDataParameterRequestList) Raw() []byte {
 	}
 
 	return data
+}
+
+func (optD OptionDataParameterRequestList) String() string {
+	var sb strings.Builder
+
+	sb.WriteString("[")
+	for i, optC := range optD.List {
+		if i != 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(OptionCodeToInfo[optC].String)
+	}
+	sb.WriteString("]")
+
+	return sb.String()
 }
 
 func (optD OptionDataParameterRequestList) Add(optC OptionCode) {

@@ -17,6 +17,7 @@ type OptionCode uint8
 
 type OptionData interface {
 	Raw() []byte
+	String() string
 }
 
 func (opt Option) String() string {
