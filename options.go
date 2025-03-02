@@ -29,8 +29,9 @@ func (opt Option) Unmarshal() []byte {
 	out := make([]byte, length+2)
 	out[0] = byte(opt.Code)
 	out[1] = byte(length)
+        copy(out[2:], data)
 
-	return out
+	return data
 }
 
 func (opts Options) Add(opt Option) {
