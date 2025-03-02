@@ -14,7 +14,7 @@ func (optD OptionDataParameterRequestList) Raw() []byte {
 }
 
 func (optD OptionDataParameterRequestList) Add(optC OptionCode) {
-        optD.List = append(optD.List, optC)
+	optD.List = append(optD.List, optC)
 }
 
 func MarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
@@ -26,16 +26,16 @@ func MarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 }
 
 func NewOptionParameterRequestList(optCodes ...OptionCode) Option {
-        opt := Option{
-                Code: OptionCodeParameterRequestList,
-                Data: OptionDataParameterRequestList{
-                        List: make([]OptionCode, 0),
-                },
-        }
+	opt := Option{
+		Code: OptionCodeParameterRequestList,
+		Data: OptionDataParameterRequestList{
+			List: make([]OptionCode, 0),
+		},
+	}
 
-        for _, optCode := range optCodes {
-                opt.Data.(OptionDataParameterRequestList).Add(optCode)
-        }
+	for _, optCode := range optCodes {
+		opt.Data.(OptionDataParameterRequestList).Add(optCode)
+	}
 
-        return opt
+	return opt
 }

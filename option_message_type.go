@@ -45,13 +45,13 @@ func MarshalOptionDataMessageType(data []byte) (OptionData, error) {
 }
 
 func NewOptionMessageType(msgType OptionMessageTypeCode) (Option, error) {
-        _, exists := OptionMessageTypeCodeToString[msgType]
-        if !exists {
-                return Option{}, errors.New("invalid message type")
-        }
+	_, exists := OptionMessageTypeCodeToString[msgType]
+	if !exists {
+		return Option{}, errors.New("invalid message type")
+	}
 
-        return Option{
-                Code: OptionCodeMessageType,
-                Data: OptionDataMessageType{Type: msgType},
-        }, nil
+	return Option{
+		Code: OptionCodeMessageType,
+		Data: OptionDataMessageType{Type: msgType},
+	}, nil
 }

@@ -23,8 +23,8 @@ func MarshalOptionDataSubnetMask(data []byte) (OptionData, error) {
 }
 
 func NewOptionSubnetMask(mask net.IPMask) Option {
-        return Option{
-                Code: OptionCodeSubnetMask,
-                Data: OptionDataSubnetMask{Mask: mask},
-        }
+	return Option{
+		Code: OptionCodeSubnetMask,
+		Data: OptionDataSubnetMask{Mask: mask},
+	}
 }

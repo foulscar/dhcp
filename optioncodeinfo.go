@@ -1,7 +1,7 @@
 package dhcp
 
 type OptionCodeInfo struct {
-	String      string
+	String        string
 	DataMarshaler func([]byte) (OptionData, error)
 }
 
@@ -26,15 +26,15 @@ const (
 
 var OptionCodeToInfo map[OptionCode]OptionCodeInfo = map[OptionCode]OptionCodeInfo{
 	OptionCodeSubnetMask: OptionCodeInfo{
-		String:      "Subnet Mask",
+		String:        "Subnet Mask",
 		DataMarshaler: MarshalOptionDataSubnetMask,
 	},
 	OptionCodeMessageType: OptionCodeInfo{
-		String:      "DHCP Message Type",
+		String:        "DHCP Message Type",
 		DataMarshaler: MarshalOptionDataMessageType,
 	},
 	OptionCodeParameterRequestList: OptionCodeInfo{
-		String:      "Parameter Request List",
+		String:        "Parameter Request List",
 		DataMarshaler: MarshalOptionDataParameterRequestList,
 	},
 }
