@@ -154,8 +154,14 @@ func (msg *Message) Unmarshal() []byte {
 	copy(data[44:108], msg.ServerHostname)
 	copy(data[108:236], msg.BootFilename)
 	copy(data[236:240], MagicCookie)
+        data = append(data, msg.Options.Unmarshal()...)
 
-	return append(data, msg.Options.Unmarshal()...)
+        paddingLen := 0
+        if len(data) < 300 {
+                paddingLen = 300 - len(data)
+        }
+
+	return append(data, make([]byte, paddingLen)...)
 }
 
 func NewEmptyMessage() Message {
