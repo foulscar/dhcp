@@ -1,5 +1,7 @@
 package dhcp
 
+type OptionCode uint8
+
 type OptionCodeInfo struct {
 	String        string
 	DataMarshaler func([]byte) (OptionData, error)

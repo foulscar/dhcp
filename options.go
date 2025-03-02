@@ -2,36 +2,28 @@ package dhcp
 
 import (
 	"fmt"
+	"strings"
 )
-
-var MagicCookie []byte = []byte{0x63, 0x82, 0x53, 0x63}
 
 type Options map[OptionCode]Option
 
-type Option struct {
-	Code OptionCode
-	Data OptionData
-}
+func (opts Options) String() string {
+	var sb strings.Builder
 
-type OptionCode uint8
+	i := 0
+	for _, opt := range opts {
+		if i != 0 {
+			sb.WriteString("\n")
+		}
+		sb.WriteString(opt.String())
+		i++
+	}
+	if i != 0 {
+		sb.WriteString("\n")
+	}
+	sb.WriteString("END [255]")
 
-type OptionData interface {
-	Raw() []byte
-	String() string
-}
-
-func (opt Option) String() string {
-	return OptionCodeToInfo[opt.Code].String
-}
-
-func (opt Option) Unmarshal() []byte {
-	data := opt.Data.Raw()
-	length := len(data)
-	out := make([]byte, 2)
-	out[0] = byte(opt.Code)
-	out[1] = byte(length)
-
-	return append(out, data...)
+	return sb.String()
 }
 
 func (opts Options) Add(opt Option) {
