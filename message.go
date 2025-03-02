@@ -62,7 +62,7 @@ func IsEncodedMessage(data []byte) bool {
 	return true
 }
 
-func DecodeMessage(data []byte) (*Message, error) {
+func MarshalMessage(data []byte) (*Message, error) {
 	if !IsEncodedMessage(data) {
 		return nil, errors.New("data does not contain an encoded dhcp message")
 	}
@@ -134,4 +134,33 @@ func DecodeMessage(data []byte) (*Message, error) {
 	msg.Options, _ = MarshalOptions(data[240:])
 
 	return msg, nil
+}
+
+func (msg *Message) Unmarshal() []byte {
+        var data []byte
+
+        data = append(data,
+                byte(msg.BOOTPMessageType),
+                byte(msg.HardwareAddrType),
+                byte(msg.HardwareAddrLen),
+                byte(msg.HopCount),
+        )
+        binary.BigEndian.AppendUint32(data, msg.TransactionID)
+        binary.BigEndian.AppendUint16(data, msg.SecsElapsed)
+        binary.BigEndian.AppendUint16(data, msg.Flags)
+        data = append(data, []byte(msg.ClientIPAddr)...)
+        data = append(data, []byte(msg.YourIPAddr)...)
+        data = append(data, []byte(msg.ServerIPAddr)...)
+        data = append(data, []byte(msg.GatewayIPAddr)...)
+        data = append(data, []byte(msg.ClientHardwareAddr)...)
+        sHostname := [64]byte{}
+        copy(sHostname[:], msg.ServerHostname)
+        data = append(data, sHostname[:]...)
+        bootFilename := [128]byte{}
+        copy(bootFilename[:], msg.BootFilename)
+        data = append(data, bootFilename[:]...)
+        data = append(data, MagicCookie...)
+        data = append(data, msg.Options.Unmarshal()...) 
+
+        return data
 }
