@@ -18,6 +18,7 @@ const (
 	OptionCodeHostname            OptionCode = OptionCode(12)
 	OptionCodeDomainname          OptionCode = OptionCode(15)
 	OptionCodeRootPath            OptionCode = OptionCode(17)
+	OptionCodeMessageType         OptionCode = OptionCode(53)
 
 	OptionCodeEnd OptionCode = OptionCode(255)
 )
@@ -26,5 +27,9 @@ var OptionCodeToInfo map[OptionCode]OptionCodeInfo = map[OptionCode]OptionCodeIn
 	OptionCodeSubnetMask: OptionCodeInfo{
 		String:      "Subnet Mask",
 		DataBuilder: BuildOptionDataSubnetMask,
+	},
+	OptionCodeMessageType: OptionCodeInfo{
+		String:      "DHCP Message Type",
+		DataBuilder: BuildOptionDataMessageType,
 	},
 }

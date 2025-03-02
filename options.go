@@ -34,12 +34,12 @@ func (opt Option) Unmarshal() []byte {
 }
 
 func (opts Options) Unmarshal() []byte {
-        var data []byte
-        for _, opt := range opts {
-                data = append(data, opt.Unmarshal()...)
-        }
+	var data []byte
+	for _, opt := range opts {
+		data = append(data, opt.Unmarshal()...)
+	}
 
-        return data
+	return data
 }
 
 func MarshalOptions(data []byte) (Options, []error) {
