@@ -21,3 +21,10 @@ func MarshalOptionDataSubnetMask(data []byte) (OptionData, error) {
 	optD := OptionDataSubnetMask{Mask: net.IPMask(data)}
 	return optD, nil
 }
+
+func NewOptionSubnetMask(mask net.IPMask) Option {
+        return Option{
+                Code: OptionCodeSubnetMask,
+                Data: OptionDataSubnetMask{Mask: mask},
+        }
+}
