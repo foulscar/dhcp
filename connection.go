@@ -14,6 +14,7 @@ type DHCPConn struct {
 	sendConn   net.PacketConn
 	sendPort   int
 	iface      *net.Interface
+	dstAddr    *net.UDPAddr
 }
 
 func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) {
@@ -39,6 +40,10 @@ func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) 
 		sendConn:   sendConn,
 		sendPort:   sendPort,
 		iface:      iface,
+		dstAddr: &net.UDPAddr{
+			IP:   net.IPv4bcast,
+			Port: sendPort,
+		},
 	}, nil
 }
 
@@ -48,11 +53,7 @@ func (dc *DHCPConn) Read(b []byte) (int, error) {
 }
 
 func (dc *DHCPConn) Write(b []byte) (int, error) {
-	dstAddr := &net.UDPAddr{
-		IP:   net.IPv4bcast,
-		Port: dc.sendPort,
-	}
-	return dc.sendConn.WriteTo(b, dstAddr)
+	return dc.sendConn.WriteTo(b, dc.dstAddr)
 }
 
 func (dc *DHCPConn) Close() error {
