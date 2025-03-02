@@ -42,6 +42,7 @@ func (opts Options) Unmarshal() []byte {
 	for _, opt := range opts {
 		data = append(data, opt.Unmarshal()...)
 	}
+        data = append(data, byte(OptionCodeEnd))
 
 	return data
 }
