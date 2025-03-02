@@ -4,7 +4,7 @@ type HardwareAddrType uint8
 
 const HardwareAddrTypeEthernet = 1
 
-var HardwareAddrTypeToString map[HardwareAddrType]string = map[HardwareAddrType]string{
+var HardwareAddrTypeToString = map[HardwareAddrType]string{
 	HardwareAddrTypeEthernet: "Ethernet",
 }
 

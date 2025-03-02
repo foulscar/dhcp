@@ -9,17 +9,17 @@ type OptionDataMessageType struct {
 type OptionMessageTypeCode uint8
 
 const (
-	OptionMessageTypeCodeDISCOVER OptionMessageTypeCode = OptionMessageTypeCode(1)
-	OptionMessageTypeCodeOFFER    OptionMessageTypeCode = OptionMessageTypeCode(2)
-	OptionMessageTypeCodeREQUEST  OptionMessageTypeCode = OptionMessageTypeCode(3)
-	OptionMessageTypeCodeDECLINE  OptionMessageTypeCode = OptionMessageTypeCode(4)
-	OptionMessageTypeCodeACK      OptionMessageTypeCode = OptionMessageTypeCode(5)
-	OptionMessageTypeCodeNACK     OptionMessageTypeCode = OptionMessageTypeCode(6)
-	OptionMessageTypeCodeRELEASE  OptionMessageTypeCode = OptionMessageTypeCode(7)
-	OptionMessageTypeCodeINFORM   OptionMessageTypeCode = OptionMessageTypeCode(8)
+	OptionMessageTypeCodeDISCOVER = OptionMessageTypeCode(1)
+	OptionMessageTypeCodeOFFER    = OptionMessageTypeCode(2)
+	OptionMessageTypeCodeREQUEST  = OptionMessageTypeCode(3)
+	OptionMessageTypeCodeDECLINE  = OptionMessageTypeCode(4)
+	OptionMessageTypeCodeACK      = OptionMessageTypeCode(5)
+	OptionMessageTypeCodeNACK     = OptionMessageTypeCode(6)
+	OptionMessageTypeCodeRELEASE  = OptionMessageTypeCode(7)
+	OptionMessageTypeCodeINFORM   = OptionMessageTypeCode(8)
 )
 
-var OptionMessageTypeCodeToString map[OptionMessageTypeCode]string = map[OptionMessageTypeCode]string{
+var OptionMessageTypeCodeToString = map[OptionMessageTypeCode]string{
 	OptionMessageTypeCodeDISCOVER: "DISCOVER",
 	OptionMessageTypeCodeOFFER:    "OFFER",
 	OptionMessageTypeCodeREQUEST:  "REQUEST",

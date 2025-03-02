@@ -7,7 +7,7 @@ const (
 	BOOTPMessageTypeReply   BOOTPMessageType = 2
 )
 
-var BOOTPMessageTypeToString map[BOOTPMessageType]string = map[BOOTPMessageType]string{
+var BOOTPMessageTypeToString = map[BOOTPMessageType]string{
 	BOOTPMessageTypeRequest: "REQUEST",
 	BOOTPMessageTypeReply:   "REPLY",
 }

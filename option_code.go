@@ -26,7 +26,7 @@ const (
 	OptionCodeEnd OptionCode = OptionCode(255)
 )
 
-var OptionCodeToInfo map[OptionCode]OptionCodeInfo = map[OptionCode]OptionCodeInfo{
+var OptionCodeToInfo = map[OptionCode]OptionCodeInfo{
 	OptionCodeSubnetMask: OptionCodeInfo{
 		String:        "Subnet Mask",
 		DataMarshaler: MarshalOptionDataSubnetMask,
