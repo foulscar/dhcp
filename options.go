@@ -30,6 +30,14 @@ func (opts Options) Add(opt Option) {
 	opts[opt.Code] = opt
 }
 
+func (opts Options) Update(opt Option) {
+	opts[opt.Code] = opt
+}
+
+func (opts Options) Remove(optCode OptionCode) {
+	delete(opts, optCode)
+}
+
 func (opts Options) Contains(code OptionCode) bool {
 	_, exists := opts[code]
 	return exists
