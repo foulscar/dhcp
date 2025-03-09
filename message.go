@@ -14,7 +14,7 @@ type Message struct {
 	HopCount           uint8
 	TransactionID      uint32
 	SecsElapsed        uint16
-	Flags              uint16
+	Flags              Flags
 	ClientIPAddr       net.IP
 	YourIPAddr         net.IP
 	ServerIPAddr       net.IP
@@ -47,7 +47,7 @@ func (msg Message) String() string {
 	sb.WriteString(strconv.Itoa(int(msg.SecsElapsed)))
 
 	sb.WriteString("\nFlags: ")
-	fmt.Fprintf(&sb, "%#x", msg.Flags)
+	fmt.Fprintf(&sb, "%s [%#x]", msg.Flags.String(), uint16(msg.Flags))
 
 	sb.WriteString("\nClient IP Address: ")
 	sb.WriteString(msg.ClientIPAddr.String())

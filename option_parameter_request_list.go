@@ -1,20 +1,12 @@
 package dhcp
 
 import (
+	"errors"
 	"strings"
 )
 
 type OptionDataParameterRequestList struct {
 	List []OptionCode
-}
-
-func (optD OptionDataParameterRequestList) Raw() []byte {
-	data := make([]byte, len(optD.List))
-	for i, optC := range optD.List {
-		data[i] = byte(optC)
-	}
-
-	return data
 }
 
 func (optD OptionDataParameterRequestList) String() string {
@@ -25,11 +17,32 @@ func (optD OptionDataParameterRequestList) String() string {
 		if i != 0 {
 			sb.WriteString(", ")
 		}
-		sb.WriteString(OptionCodeToInfo[optC].String)
+		sb.WriteString(OptionCodeToString[optC])
 	}
 	sb.WriteString("]")
 
 	return sb.String()
+}
+
+func (optD OptionDataParameterRequestList) IsValid() bool {
+	for _, code := range optD.List {
+		if code.String() == "" {
+			return false
+		}
+	}
+	return true
+}
+
+func (optD OptionDataParameterRequestList) Unmarshal() ([]byte, error) {
+	if !optD.IsValid() {
+		return nil, errors.New("option data is invalid")
+	}
+	data := make([]byte, len(optD.List))
+	for i, optC := range optD.List {
+		data[i] = byte(optC)
+	}
+
+	return data, nil
 }
 
 func (optD OptionDataParameterRequestList) Add(optC OptionCode) {
@@ -41,7 +54,12 @@ func MarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 	for i, b := range data {
 		list[i] = OptionCode(b)
 	}
-	return OptionDataParameterRequestList{List: list}, nil
+	optData := OptionDataParameterRequestList{List: list}
+	if !optData.IsValid() {
+		return nil, errors.New("data contains an invalid option code")
+	}
+
+	return optData, nil
 }
 
 func NewOptionParameterRequestList(optCodes ...OptionCode) Option {

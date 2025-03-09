@@ -3,6 +3,7 @@ package dhcp
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"net"
 )
 
@@ -45,7 +46,7 @@ func MarshalMessage(data []byte) (*Message, error) {
 	msg.SecsElapsed = binary.BigEndian.Uint16(data[8:10])
 
 	// Flags
-	msg.Flags = binary.BigEndian.Uint16(data[10:12])
+	msg.Flags = Flags(binary.BigEndian.Uint16(data[10:12]))
 
 	// ClientIPAddr
 	msg.ClientIPAddr = net.IP(data[12:16])
@@ -75,7 +76,11 @@ func MarshalMessage(data []byte) (*Message, error) {
 	msg.BootFilename = string(data[108:236])
 
 	// Options
-	msg.Options, _ = MarshalOptions(data[240:])
+	opts, err := MarshalOptions(data[240:])
+	if err != nil {
+		return nil, fmt.Errorf("could not marshal options from data. %s", err)
+	}
+	msg.Options = opts
 
 	return msg, nil
 }

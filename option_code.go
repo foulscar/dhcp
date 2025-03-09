@@ -2,13 +2,15 @@ package dhcp
 
 type OptionCode uint8
 
-type OptionCodeInfo struct {
-	String        string
-	DataMarshaler func([]byte) (OptionData, error)
+type OptionDataMarshaller func([]byte) (OptionData, error)
+
+func (code OptionCode) String() string {
+	return OptionCodeToString[code]
 }
 
 const (
-	OptionCodePad                  OptionCode = OptionCode(0)
+	OptionCodePad OptionCode = OptionCode(0)
+
 	OptionCodeSubnetMask           OptionCode = OptionCode(1)
 	OptionCodeRouter               OptionCode = OptionCode(3)
 	OptionCodeTimeServer           OptionCode = OptionCode(4)
@@ -26,17 +28,14 @@ const (
 	OptionCodeEnd OptionCode = OptionCode(255)
 )
 
-var OptionCodeToInfo = map[OptionCode]OptionCodeInfo{
-	OptionCodeSubnetMask: OptionCodeInfo{
-		String:        "Subnet Mask",
-		DataMarshaler: MarshalOptionDataSubnetMask,
-	},
-	OptionCodeMessageType: OptionCodeInfo{
-		String:        "DHCP Message Type",
-		DataMarshaler: MarshalOptionDataMessageType,
-	},
-	OptionCodeParameterRequestList: OptionCodeInfo{
-		String:        "Parameter Request List",
-		DataMarshaler: MarshalOptionDataParameterRequestList,
-	},
+var OptionCodeToString = map[OptionCode]string{
+	OptionCodeSubnetMask:           "Subnet Mask",
+	OptionCodeMessageType:          "DHCP Message Type",
+	OptionCodeParameterRequestList: "Parameter Request List",
+}
+
+var OptionCodeToDataMarshaller = map[OptionCode]OptionDataMarshaller{
+	OptionCodeSubnetMask:           MarshalOptionDataSubnetMask,
+	OptionCodeMessageType:          MarshalOptionDataMessageType,
+	OptionCodeParameterRequestList: MarshalOptionDataParameterRequestList,
 }

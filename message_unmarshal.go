@@ -2,9 +2,10 @@ package dhcp
 
 import (
 	"encoding/binary"
+	"fmt"
 )
 
-func (msg *Message) Unmarshal() []byte {
+func (msg *Message) Unmarshal() ([]byte, error) {
 	data := make([]byte, 240)
 
 	data[0] = byte(msg.BOOTPMessageType)
@@ -13,7 +14,7 @@ func (msg *Message) Unmarshal() []byte {
 	data[3] = byte(msg.HopCount)
 	binary.BigEndian.PutUint32(data[4:8], msg.TransactionID)
 	binary.BigEndian.PutUint16(data[8:10], msg.SecsElapsed)
-	binary.BigEndian.PutUint16(data[10:12], msg.Flags)
+	binary.BigEndian.PutUint16(data[10:12], uint16(msg.Flags))
 	copy(data[12:16], []byte(msg.ClientIPAddr))
 	copy(data[16:20], []byte(msg.YourIPAddr))
 	copy(data[20:24], []byte(msg.ServerIPAddr))
@@ -22,12 +23,16 @@ func (msg *Message) Unmarshal() []byte {
 	copy(data[44:108], msg.ServerHostname)
 	copy(data[108:236], msg.BootFilename)
 	copy(data[236:240], MagicCookie)
-	data = append(data, msg.Options.Unmarshal()...)
+	optsBytes, err := msg.Options.Unmarshal()
+	if err != nil {
+		return nil, fmt.Errorf("could not unmarshal message. %s", err)
+	}
+	data = append(data, optsBytes...)
 
 	paddingLen := 0
 	if len(data) < 300 {
 		paddingLen = 300 - len(data)
 	}
 
-	return append(data, make([]byte, paddingLen)...)
+	return append(data, make([]byte, paddingLen)...), nil
 }

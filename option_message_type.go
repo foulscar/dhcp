@@ -30,12 +30,37 @@ var OptionMessageTypeCodeToString = map[OptionMessageTypeCode]string{
 	OptionMessageTypeCodeINFORM:   "INFORM",
 }
 
-func (optD OptionDataMessageType) Raw() []byte {
-	return []byte{byte(optD.Type)}
+var OptionMessageTypeCodeValidBOOTP = map[OptionMessageTypeCode]BOOTPMessageType{
+	OptionMessageTypeCodeDISCOVER: BOOTPMessageTypeRequest,
+	OptionMessageTypeCodeOFFER:    BOOTPMessageTypeReply,
+	OptionMessageTypeCodeREQUEST:  BOOTPMessageTypeRequest,
+	OptionMessageTypeCodeDECLINE:  BOOTPMessageTypeRequest,
+	OptionMessageTypeCodeACK:      BOOTPMessageTypeReply,
+	OptionMessageTypeCodeNACK:     BOOTPMessageTypeReply,
+	OptionMessageTypeCodeRELEASE:  BOOTPMessageTypeRequest,
+	OptionMessageTypeCodeINFORM:   BOOTPMessageTypeRequest,
+}
+
+func (msgType OptionMessageTypeCode) MatchesBOOTPMessageType(bootpMsgType BOOTPMessageType) bool {
+	return OptionMessageTypeCodeValidBOOTP[msgType] == bootpMsgType
 }
 
 func (optD OptionDataMessageType) String() string {
 	return OptionMessageTypeCodeToString[optD.Type]
+}
+
+func (optD OptionDataMessageType) IsValid() bool {
+	if optD.String() == "" {
+		return false
+	}
+	return true
+}
+
+func (optD OptionDataMessageType) Unmarshal() ([]byte, error) {
+	if !optD.IsValid() {
+		return nil, errors.New("option data contains an invalid message type")
+	}
+	return []byte{byte(optD.Type)}, nil
 }
 
 func MarshalOptionDataMessageType(data []byte) (OptionData, error) {
