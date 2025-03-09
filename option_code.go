@@ -9,8 +9,7 @@ func (code OptionCode) String() string {
 }
 
 const (
-	OptionCodePad OptionCode = 0
-
+	OptionCodePad                  OptionCode = 0
 	OptionCodeSubnetMask           OptionCode = 1
 	OptionCodeRouter               OptionCode = 3
 	OptionCodeTimeServer           OptionCode = 4
@@ -24,8 +23,7 @@ const (
 	OptionCodeRootPath             OptionCode = 17
 	OptionCodeMessageType          OptionCode = 53
 	OptionCodeParameterRequestList OptionCode = 55
-
-	OptionCodeEnd OptionCode = 255
+	OptionCodeEnd                  OptionCode = 255
 )
 
 var OptionCodeToString = map[OptionCode]string{
