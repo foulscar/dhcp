@@ -76,10 +76,7 @@ func MarshalMessage(data []byte) (*Message, error) {
 	msg.BootFilename = string(data[108:236])
 
 	// Options
-	opts, err := MarshalOptions(data[240:])
-	if err != nil {
-		return nil, fmt.Errorf("could not marshal options from data. %s", err)
-	}
+	opts, _ := MarshalOptions(data[240:])
 	msg.Options = opts
 
 	return msg, nil
