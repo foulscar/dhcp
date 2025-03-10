@@ -3,7 +3,6 @@ package dhcp
 import (
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"net"
 )
 

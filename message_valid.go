@@ -47,7 +47,7 @@ func (msg Message) IsValid() (valid bool, reason string) {
 		return false, "options are invalid"
 	}
 
-	msgTypeCode, err := msg.GetDHCPMessageType()
+	msgTypeCode, err := msg.GetMessageType()
 	if err != nil {
 		return false, "option message type is required and must be valid"
 	}
