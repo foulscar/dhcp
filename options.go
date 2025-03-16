@@ -88,14 +88,7 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 			break
 		}
 
-		_, exists := optMap.ToString[optCode]
-		if !exists {
-			errs = append(errs, fmt.Errorf("OptionCode '(optc %d)' not recognized", int(optCode)))
-			i += 1 + optLen
-			continue
-		}
-
-		optData, err := optMap.ToDataUnmarshaller[optCode](data[i+2 : i+2+optLen])
+		optData, err := optMap.GetDataUnmarshaller(optCode)(data[i+2 : i+2+optLen])
 		if err != nil {
 			errs = append(errs, err)
 			i += 1 + optLen

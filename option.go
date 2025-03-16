@@ -17,6 +17,11 @@ type OptionData interface {
 	IsValid() bool
 }
 
+func (opt Option) IsDefault() bool {
+	_, ok := opt.Data.(OptionDataDefault)
+	return ok
+}
+
 func (opt Option) String() string {
 	var sb strings.Builder
 

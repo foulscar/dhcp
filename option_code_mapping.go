@@ -11,4 +11,16 @@ var GlobalOptionCodeMapping = OptionCodeMapping{
 	ToDataUnmarshaller: OptionCodeToDataUnmarshaller,
 }
 
+func (m OptionCodeMapping) GetString(code OptionCode) string { return m.ToString[code] }
+
+func (m OptionCodeMapping) GetDataUnmarshaller(code OptionCode) OptionDataUnmarshaller {
+	if code == OptionCodePad || code == OptionCodeEnd {
+		return nil
+	}
+	if m.ToDataUnmarshaller[code] == nil {
+		return UnmarshalOptionDefault
+	}
+	return m.ToDataUnmarshaller[code]
+}
+
 var optMap = &GlobalOptionCodeMapping
