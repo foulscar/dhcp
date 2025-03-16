@@ -25,7 +25,7 @@ func (opt Option) IsDefault() bool {
 func (opt Option) String() string {
 	var sb strings.Builder
 
-	fmt.Fprintf(&sb, "%s", OptionCodeToString[opt.Code])
+	fmt.Fprintf(&sb, "%s", optMap.GetString(opt.Code))
 	fmt.Fprintf(&sb, " [%s]: ", strconv.Itoa(int(opt.Code)))
 	sb.WriteString(opt.Data.String())
 
