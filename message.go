@@ -76,7 +76,7 @@ func (msg Message) String() string {
 	return sb.String()
 }
 
-func NewEmptyMessage() Message {
+func newEmptyMessage() Message {
 	msg := Message{}
 	msg.ClientIPAddr = net.IPv4zero
 	msg.YourIPAddr = net.IPv4zero

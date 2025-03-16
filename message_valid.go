@@ -56,16 +56,5 @@ func (msg Message) IsValid() (valid bool, reason string) {
 		return false, "bootp message type does not match message type option"
 	}
 
-	switch msgTypeCode {
-	case OptionMessageTypeCodeDISCOVER:
-		if !msg.Options.Contains(OptionCodeParameterRequestList) {
-			return false, "message type requires option parameter request list"
-		}
-	case OptionMessageTypeCodeOFFER, OptionMessageTypeCodeACK:
-		if msg.ClientIPAddr.Equal(net.IPv4zero) {
-			return false, "message type requires client ip address to be != 0.0.0.0"
-		}
-	}
-
 	return true, "ok"
 }
