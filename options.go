@@ -53,13 +53,13 @@ func (opts Options) IsValid() bool {
 	return true
 }
 
-func (opts Options) Unmarshal() ([]byte, error) {
+func (opts Options) Marshal() ([]byte, error) {
 	var data []byte
 	for _, opt := range opts {
 		valid := opt.IsValid()
-		optData, err := opt.Data.Unmarshal()
+		optData, err := opt.Data.Marshal()
 		if !valid || err != nil {
-			return nil, fmt.Errorf("could not unmarshal options. option with code '%d' is invalid", int(opt.Code))
+			return nil, fmt.Errorf("could not marshal options. option with code '%d' is invalid", int(opt.Code))
 		}
 		data = append(data, optData...)
 	}
@@ -68,7 +68,7 @@ func (opts Options) Unmarshal() ([]byte, error) {
 	return data, nil
 }
 
-func MarshalOptions(data []byte) (Options, []error) {
+func UnmarshalOptions(data []byte) (Options, []error) {
 	opts := make(Options)
 	var errs []error
 
@@ -88,14 +88,14 @@ func MarshalOptions(data []byte) (Options, []error) {
 			break
 		}
 
-		_, exists := OptionCodeToString[optCode]
+		_, exists := optMap.ToString[optCode]
 		if !exists {
 			errs = append(errs, fmt.Errorf("OptionCode '(optc %d)' not recognized", int(optCode)))
 			i += 1 + optLen
 			continue
 		}
 
-		optData, err := OptionCodeToDataMarshaller[optCode](data[i+2 : i+2+optLen])
+		optData, err := optMap.ToDataUnmarshaller[optCode](data[i+2 : i+2+optLen])
 		if err != nil {
 			errs = append(errs, err)
 			i += 1 + optLen

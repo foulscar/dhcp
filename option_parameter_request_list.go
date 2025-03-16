@@ -26,14 +26,14 @@ func (optD OptionDataParameterRequestList) String() string {
 
 func (optD OptionDataParameterRequestList) IsValid() bool {
 	for _, code := range optD.List {
-		if code.String() == "" {
+		if code == OptionCodePad || code == OptionCodeEnd {
 			return false
 		}
 	}
 	return true
 }
 
-func (optD OptionDataParameterRequestList) Unmarshal() ([]byte, error) {
+func (optD OptionDataParameterRequestList) Marshal() ([]byte, error) {
 	if !optD.IsValid() {
 		return nil, errors.New("option data is invalid")
 	}
@@ -49,7 +49,7 @@ func (optD OptionDataParameterRequestList) Add(optC OptionCode) {
 	optD.List = append(optD.List, optC)
 }
 
-func MarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
+func UnmarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 	list := make([]OptionCode, len(data))
 	for i, b := range data {
 		list[i] = OptionCode(b)

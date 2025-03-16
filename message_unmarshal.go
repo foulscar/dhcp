@@ -2,37 +2,81 @@ package dhcp
 
 import (
 	"encoding/binary"
-	"fmt"
+	"errors"
+	"net"
 )
 
-func (msg *Message) Unmarshal() ([]byte, error) {
-	data := make([]byte, 240)
-
-	data[0] = byte(msg.BOOTPMessageType)
-	data[1] = byte(msg.HardwareAddrType)
-	data[2] = byte(msg.HardwareAddrLen)
-	data[3] = byte(msg.HopCount)
-	binary.BigEndian.PutUint32(data[4:8], msg.TransactionID)
-	binary.BigEndian.PutUint16(data[8:10], msg.SecsElapsed)
-	binary.BigEndian.PutUint16(data[10:12], uint16(msg.Flags))
-	copy(data[12:16], []byte(msg.ClientIPAddr))
-	copy(data[16:20], []byte(msg.YourIPAddr))
-	copy(data[20:24], []byte(msg.ServerIPAddr))
-	copy(data[24:28], []byte(msg.GatewayIPAddr))
-	copy(data[28:44], []byte(msg.ClientHardwareAddr))
-	copy(data[44:108], msg.ServerHostname)
-	copy(data[108:236], msg.BootFilename)
-	copy(data[236:240], MagicCookie)
-	optsBytes, err := msg.Options.Unmarshal()
-	if err != nil {
-		return nil, fmt.Errorf("could not unmarshal message. %s", err)
-	}
-	data = append(data, optsBytes...)
-
-	paddingLen := 0
-	if len(data) < 300 {
-		paddingLen = 300 - len(data)
+func UnmarshalMessage(data []byte) (*Message, error) {
+	if !IsEncodedMessage(data) {
+		return nil, errors.New("data does not contain an encoded dhcp message")
 	}
 
-	return append(data, make([]byte, paddingLen)...), nil
+	msg := &Message{}
+
+	// MessageType
+	switch BOOTPMessageType(data[0]) {
+	case BOOTPMessageTypeRequest, BOOTPMessageTypeReply:
+		msg.BOOTPMessageType = BOOTPMessageType(data[0])
+	default:
+		return nil, errors.New("bootp message type is invalid")
+	}
+
+	// HardwareAddrType
+	switch HardwareAddrType(data[1]) {
+	case HardwareAddrTypeEthernet:
+		msg.HardwareAddrType = HardwareAddrType(data[1])
+	default:
+		return nil, errors.New("hardware type is invalid")
+	}
+
+	// HardwareAddrLen
+	if uint8(data[2]) != msg.HardwareAddrType.ValidLength() {
+		return nil, errors.New("hardware address length does not match hardware type")
+	}
+	msg.HardwareAddrLen = uint8(data[2])
+
+	// HopCount
+	msg.HopCount = uint8(data[3])
+
+	// TransactionID
+	msg.TransactionID = binary.BigEndian.Uint32(data[4:8])
+
+	// SecsElapsed
+	msg.SecsElapsed = binary.BigEndian.Uint16(data[8:10])
+
+	// Flags
+	msg.Flags = Flags(binary.BigEndian.Uint16(data[10:12]))
+
+	// ClientIPAddr
+	msg.ClientIPAddr = net.IP(data[12:16])
+
+	// YourIPAddr
+	msg.YourIPAddr = net.IP(data[16:20])
+
+	// ServerIPAddr
+	msg.ServerIPAddr = net.IP(data[20:24])
+
+	// GatewayIPAddr
+	msg.GatewayIPAddr = net.IP(data[24:28])
+
+	// ClientHardwareAddr
+	temp := data[28:44]
+	for _, b := range temp[6:] {
+		if b != 0x00 {
+			return nil, errors.New("client hardware address extends 6 bytes")
+		}
+	}
+	msg.ClientHardwareAddr = net.HardwareAddr(temp[:6])
+
+	// ServerHostname
+	msg.ServerHostname = string(data[44:108])
+
+	// BootFilename
+	msg.BootFilename = string(data[108:236])
+
+	// Options
+	opts, _ := UnmarshalOptions(data[240:])
+	msg.Options = opts
+
+	return msg, nil
 }

@@ -22,7 +22,7 @@ func (optD OptionDataSubnetMask) IsValid() bool {
 	return !(ones == 0 && bits == 0)
 }
 
-func (optD OptionDataSubnetMask) Unmarshal() ([]byte, error) {
+func (optD OptionDataSubnetMask) Marshal() ([]byte, error) {
 	if !optD.IsValid() {
 		return nil, errors.New("option data is invalid")
 	}
@@ -30,7 +30,7 @@ func (optD OptionDataSubnetMask) Unmarshal() ([]byte, error) {
 	return []byte(optD.Mask), nil
 }
 
-func MarshalOptionDataSubnetMask(data []byte) (OptionData, error) {
+func UnmarshalOptionDataSubnetMask(data []byte) (OptionData, error) {
 	optD := OptionDataSubnetMask{Mask: net.IPMask(data)}
 	if !optD.IsValid() {
 		return nil, errors.New("data does not represent an ipv4 subnet mask")

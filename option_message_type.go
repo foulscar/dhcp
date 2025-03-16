@@ -56,14 +56,14 @@ func (optD OptionDataMessageType) IsValid() bool {
 	return true
 }
 
-func (optD OptionDataMessageType) Unmarshal() ([]byte, error) {
+func (optD OptionDataMessageType) Marshal() ([]byte, error) {
 	if !optD.IsValid() {
 		return nil, errors.New("option data contains an invalid message type")
 	}
 	return []byte{byte(optD.Type)}, nil
 }
 
-func MarshalOptionDataMessageType(data []byte) (OptionData, error) {
+func UnmarshalOptionDataMessageType(data []byte) (OptionData, error) {
 	msgType := OptionMessageTypeCode(data[0])
 	_, exists := OptionMessageTypeCodeToString[msgType]
 	if !exists || len(data) > 1 {

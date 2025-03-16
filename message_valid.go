@@ -1,8 +1,6 @@
 package dhcp
 
-import (
-	"net"
-)
+import ()
 
 func IsEncodedMessage(data []byte) bool {
 	if len(data) < 300 {

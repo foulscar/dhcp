@@ -2,10 +2,10 @@ package dhcp
 
 type OptionCode uint8
 
-type OptionDataMarshaller func([]byte) (OptionData, error)
+type OptionDataUnmarshaller func([]byte) (OptionData, error)
 
 func (code OptionCode) String() string {
-	return OptionCodeToString[code]
+	return optMap.ToString[code]
 }
 
 const (
@@ -164,8 +164,8 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeSTDAServer:                                 "StreetTalk Directory Assistance Server",
 }
 
-var OptionCodeToDataMarshaller = map[OptionCode]OptionDataMarshaller{
-	OptionCodeSubnetMask:           MarshalOptionDataSubnetMask,
-	OptionCodeMessageType:          MarshalOptionDataMessageType,
-	OptionCodeParameterRequestList: MarshalOptionDataParameterRequestList,
+var OptionCodeToDataUnmarshaller = map[OptionCode]OptionDataUnmarshaller{
+	OptionCodeSubnetMask:           UnmarshalOptionDataSubnetMask,
+	OptionCodeMessageType:          UnmarshalOptionDataMessageType,
+	OptionCodeParameterRequestList: UnmarshalOptionDataParameterRequestList,
 }

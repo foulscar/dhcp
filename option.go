@@ -12,7 +12,7 @@ type Option struct {
 }
 
 type OptionData interface {
-	Unmarshal() ([]byte, error)
+	Marshal() ([]byte, error)
 	String() string
 	IsValid() bool
 }
@@ -35,10 +35,10 @@ func (opt Option) IsValid() bool {
 	return true
 }
 
-func (opt Option) Unmarshal() ([]byte, error) {
-	data, err := opt.Data.Unmarshal()
+func (opt Option) Marshal() ([]byte, error) {
+	data, err := opt.Data.Marshal()
 	if err != nil {
-		return nil, fmt.Errorf("error unmarshalling option. %s", err)
+		return nil, fmt.Errorf("error marshalling option. %s", err)
 	}
 	length := len(data)
 	out := make([]byte, 2)
