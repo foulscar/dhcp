@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Test Package
+    name: Test and Lint Package
     runs-on: ubuntu-latest
     
     steps:
@@ -22,3 +22,8 @@ jobs:
 
       - name: Run Tests
         run: go test
+
+      - name: Run Linter
+        uses: Jerome1337/golint-action@v1.0.1
+        with:
+          golint-path: '.'
