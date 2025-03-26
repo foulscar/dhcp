@@ -50,7 +50,7 @@ func NewConn(ifaceName string, listenPort, sendPort int) (*Conn, error) {
 }
 
 // Read reads data from the binded listening port.
-// You would marshal this data into a Message
+// You would unmarshal this data into a Message
 func (c *Conn) Read(b []byte) (int, error) {
 	n, _, err := c.listenConn.ReadFrom(b)
 	return n, err

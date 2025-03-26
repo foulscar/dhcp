@@ -8,8 +8,9 @@ import (
 
 // Option represents a DHCP Message Options Entry
 type Option struct {
-	Code OptionCode
-	Data OptionData
+	Code      OptionCode
+	Data      OptionData
+	IsDefault bool
 }
 
 // OptionData should hold the value of the represented Option Type
@@ -17,13 +18,6 @@ type OptionData interface {
 	Marshal() ([]byte, error)
 	String() string
 	IsValid() bool
-}
-
-// IsDefault checks if opt uses default Option handling.
-// See OptionDataDefault
-func (opt Option) IsDefault() bool {
-	_, ok := opt.Data.(OptionDataDefault)
-	return ok
 }
 
 // String returns a verbose, human-readable string from opt

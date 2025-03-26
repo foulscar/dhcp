@@ -4,8 +4,9 @@ package dhcp
 // You can create your own if you would like to change the behavior of this package,
 // see GlobalOptionCodeMapping
 type OptionCodeMapping struct {
-	ToString           map[OptionCode]string
-	ToDataUnmarshaller map[OptionCode]OptionDataUnmarshaller
+	ToString                map[OptionCode]string
+	ToDataUnmarshaller      map[OptionCode]OptionDataUnmarshaller
+	DefaultDataUnmarshaller OptionDataUnmarshaller
 }
 
 // GlobalOptionCodeMapping is used as the relevant OptionCodeMapping for all functions in this package.
@@ -14,8 +15,9 @@ type OptionCodeMapping struct {
 // recommended that you handle this before your program's main execution.
 // Leaving this unchanged will result in default behavior
 var GlobalOptionCodeMapping = OptionCodeMapping{
-	ToString:           OptionCodeToString,
-	ToDataUnmarshaller: OptionCodeToDataUnmarshaller,
+	ToString:                OptionCodeToString,
+	ToDataUnmarshaller:      OptionCodeToDataUnmarshaller,
+	DefaultDataUnmarshaller: UnmarshalOptionDefault,
 }
 
 // GetString returns the human-readable name represented by the OptionCode.
@@ -24,16 +26,18 @@ func (optCodeMap OptionCodeMapping) GetString(code OptionCode) string {
 	return optCodeMap.ToString[code]
 }
 
-// GetDataUnmarshaller returns the the OptionDataUnmarshaller associated with the OptionCode.
+// GetDataUnmarshaller returns the the OptionDataUnmarshaller associated with the OptionCode and
+// a boolean that is true if returning the default OptionDataUnmarshaller. If the OptionCode does
+// not have a mapping, the default OptionDataUnmarshaller will be returned.
 // It will fetch this value from optCodeMap
-func (optCodeMap OptionCodeMapping) GetDataUnmarshaller(code OptionCode) OptionDataUnmarshaller {
+func (optCodeMap OptionCodeMapping) GetDataUnmarshaller(code OptionCode) (optDUnmarshaller OptionDataUnmarshaller, isDefault bool) {
 	if code == OptionCodePad || code == OptionCodeEnd {
-		return nil
+		return nil, false
 	}
 	if optCodeMap.ToDataUnmarshaller[code] == nil {
-		return UnmarshalOptionDefault
+		return optCodeMap.DefaultDataUnmarshaller, true
 	}
-	return optCodeMap.ToDataUnmarshaller[code]
+	return optCodeMap.ToDataUnmarshaller[code], false
 }
 
 var optMap = &GlobalOptionCodeMapping

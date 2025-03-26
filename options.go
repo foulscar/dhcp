@@ -60,6 +60,31 @@ func (opts Options) IsValid() bool {
 	return true
 }
 
+// GetDefaults returns a slice of all OptionCodes present in opts that are using default data handling.
+// OptionDataDefault or a user-defined OptionData for defaults
+func (opts Options) GetDefaults() []OptionCode {
+	var defCodes []OptionCode
+	for code, opt := range opts {
+		if opt.IsDefault {
+			defCodes = append(defCodes, code)
+		}
+	}
+
+	return defCodes
+}
+
+// GetNonDefaults returns a slice of all OptionCodes present in opts that are NOT using default data handling
+func (opts Options) GetNonDefaults() []OptionCode {
+	var codes []OptionCode
+	for code, opt := range opts {
+		if !opt.IsDefault {
+			codes = append(codes, code)
+		}
+	}
+
+	return codes
+}
+
 // Marshal encodes opts as an Options field for a DHCP Message
 func (opts Options) Marshal() ([]byte, error) {
 	var data []byte
@@ -76,7 +101,7 @@ func (opts Options) Marshal() ([]byte, error) {
 	return data, nil
 }
 
-// UnmarshalOptions parses data as an Option field from a DHCP Message
+// UnmarshalOptions parses data as an Options field from a DHCP Message
 func UnmarshalOptions(data []byte) (Options, []error) {
 	opts := make(Options)
 	var errs []error
@@ -97,7 +122,8 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 			break
 		}
 
-		optData, err := optMap.GetDataUnmarshaller(optCode)(data[i+2 : i+2+optLen])
+		optDataUnmarshaller, isDefault := optMap.GetDataUnmarshaller(optCode)
+		optData, err := optDataUnmarshaller(data[i+2 : i+2+optLen])
 		if err != nil {
 			errs = append(errs, err)
 			i += 1 + optLen
@@ -105,8 +131,9 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 		}
 
 		opt := Option{
-			Code: optCode,
-			Data: optData,
+			Code:      optCode,
+			Data:      optData,
+			IsDefault: isDefault,
 		}
 
 		opts[optCode] = opt
