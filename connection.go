@@ -6,8 +6,9 @@ import (
 	"strconv"
 )
 
-// DHCPConn is used for broadcasting/listening to dhcp packets on a specified interface.
-type DHCPConn struct {
+// Conn is used for broadcasting/listening to dhcp packets on a specified interface.
+// Conn does not yet implement net.Conn, but I have plans for this
+type Conn struct {
 	listenConn net.PacketConn
 	listenPort int
 	sendConn   net.PacketConn
@@ -16,9 +17,9 @@ type DHCPConn struct {
 	dstAddr    *net.UDPAddr
 }
 
-// NewDHCPConn returns a DHCPConn on a specified interface, with specified send/receive ports.
+// NewConn returns a Conn on a specified interface, with specified send/receive ports.
 // You must have the permissions to bind to both
-func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) {
+func NewConn(ifaceName string, listenPort, sendPort int) (*Conn, error) {
 	iface, err := net.InterfaceByName(ifaceName)
 	if err != nil {
 		return nil, fmt.Errorf("error finding interface %s: %w", ifaceName, err)
@@ -35,7 +36,7 @@ func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) 
 		return nil, fmt.Errorf("failed to create UDP send socket: %w", err)
 	}
 
-	return &DHCPConn{
+	return &Conn{
 		listenConn: listenConn,
 		listenPort: listenPort,
 		sendConn:   sendConn,
@@ -50,21 +51,21 @@ func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) 
 
 // Read reads data from the binded listening port.
 // You would marshal this data into a Message
-func (dc *DHCPConn) Read(b []byte) (int, error) {
-	n, _, err := dc.listenConn.ReadFrom(b)
+func (c *Conn) Read(b []byte) (int, error) {
+	n, _, err := c.listenConn.ReadFrom(b)
 	return n, err
 }
 
 // Write broadcasts a packet to the binded broadcasting port.
 // You would marshal a Message first
-func (dc *DHCPConn) Write(b []byte) (int, error) {
-	return dc.sendConn.WriteTo(b, dc.dstAddr)
+func (c *Conn) Write(b []byte) (int, error) {
+	return c.sendConn.WriteTo(b, c.dstAddr)
 }
 
 // Close closes both connections for the broadcasting/listening ports
-func (dc *DHCPConn) Close() error {
-	lErr := dc.listenConn.Close()
-	sErr := dc.sendConn.Close()
+func (c *Conn) Close() error {
+	lErr := c.listenConn.Close()
+	sErr := c.sendConn.Close()
 	if lErr != nil || sErr != nil {
 		return fmt.Errorf("listenConn: %w, sendConn: %w", lErr, sErr)
 	}
