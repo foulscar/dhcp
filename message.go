@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// Message represents a DHCPv4 packet header and options
 type Message struct {
 	BOOTPMessageType   BOOTPMessageType
 	HardwareAddrType   HardwareAddrType
@@ -25,14 +26,15 @@ type Message struct {
 	Options            Options
 }
 
+// String parses msg and returns a verbose, multi-line string of the entire Message and it's Options
 func (msg Message) String() string {
 	var sb strings.Builder
 
 	sb.WriteString("BOOTP Message Type: ")
-	sb.WriteString(BOOTPMessageTypeToString[msg.BOOTPMessageType])
+	sb.WriteString(msg.BOOTPMessageType.String())
 
 	sb.WriteString("\nHardware Type: ")
-	sb.WriteString(HardwareAddrTypeToString[msg.HardwareAddrType])
+	sb.WriteString(msg.HardwareAddrType.String())
 
 	sb.WriteString("\nHardware Address Length: ")
 	sb.WriteString(strconv.Itoa(int(msg.HardwareAddrLen)))

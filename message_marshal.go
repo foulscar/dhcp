@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// MarshalMessage returns the dhcpv4 encoding of msg
 func MarshalMessage(msg *Message) ([]byte, error) {
 	data := make([]byte, 240)
 

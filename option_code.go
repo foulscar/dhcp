@@ -4,6 +4,7 @@ type OptionCode uint8
 
 type OptionDataUnmarshaller func([]byte) (OptionData, error)
 
+// String returns the human-readable name represented by the OptionCode
 func (code OptionCode) String() string {
 	return optMap.ToString[code]
 }

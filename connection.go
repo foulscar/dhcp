@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"net"
 	"strconv"
-	"time"
 )
 
-// Implements net.Conn
+// DHCPConn is used for broadcasting/listening to dhcp packets on a specified interface.
 type DHCPConn struct {
 	listenConn net.PacketConn
 	listenPort int
@@ -17,6 +16,8 @@ type DHCPConn struct {
 	dstAddr    *net.UDPAddr
 }
 
+// NewDHCPConn returns a DHCPConn on a specified interface, with specified send/receive ports.
+// You must have the permissions to bind to both
 func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) {
 	iface, err := net.InterfaceByName(ifaceName)
 	if err != nil {
@@ -47,15 +48,20 @@ func NewDHCPConn(ifaceName string, listenPort, sendPort int) (*DHCPConn, error) 
 	}, nil
 }
 
+// Read reads data from the binded listening port.
+// You would marshal this data into a Message
 func (dc *DHCPConn) Read(b []byte) (int, error) {
 	n, _, err := dc.listenConn.ReadFrom(b)
 	return n, err
 }
 
+// Write broadcasts a packet to the binded broadcasting port.
+// You would marshal a Message first
 func (dc *DHCPConn) Write(b []byte) (int, error) {
 	return dc.sendConn.WriteTo(b, dc.dstAddr)
 }
 
+// Close closes both connections for the broadcasting/listening ports
 func (dc *DHCPConn) Close() error {
 	lErr := dc.listenConn.Close()
 	sErr := dc.sendConn.Close()
@@ -65,6 +71,7 @@ func (dc *DHCPConn) Close() error {
 	return nil
 }
 
+/* Will implement net.Conn soon
 func (dc *DHCPConn) SetDeadline(t time.Time) error {
 	lErr := dc.listenConn.SetDeadline(t)
 	sErr := dc.sendConn.SetDeadline(t)
@@ -81,3 +88,4 @@ func (dc *DHCPConn) SetReadDeadline(t time.Time) error {
 func (dc *DHCPConn) SetWriteDeadline(t time.Time) error {
 	return dc.sendConn.SetWriteDeadline(t)
 }
+*/

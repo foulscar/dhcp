@@ -2,6 +2,8 @@ package dhcp
 
 import ()
 
+// IsEncodedMessage checks if data represents an encoded Message.
+// It will not test validity, see Message.IsValid()
 func IsEncodedMessage(data []byte) bool {
 	if len(data) < 300 {
 		return false
@@ -13,6 +15,7 @@ func IsEncodedMessage(data []byte) bool {
 	return true
 }
 
+// IsValid checks if msg is a valid Message
 func (msg Message) IsValid() (valid bool, reason string) {
 	switch msg.BOOTPMessageType {
 	case BOOTPMessageTypeRequest, BOOTPMessageTypeReply:
@@ -20,7 +23,7 @@ func (msg Message) IsValid() (valid bool, reason string) {
 		return false, "invalid bootp message type"
 	}
 
-	_, exists := HardwareAddrTypeToString[msg.HardwareAddrType]
+	_, exists := hardwareAddrTypeToString[msg.HardwareAddrType]
 	if !exists {
 		return false, "invalid hardware type"
 	}
@@ -29,7 +32,7 @@ func (msg Message) IsValid() (valid bool, reason string) {
 		return false, "hardware address length does not match hardware type"
 	}
 
-	_, exists = FlagsToString[msg.Flags]
+	_, exists = flagsToString[msg.Flags]
 	if !exists {
 		return false, "invalid flags"
 	}

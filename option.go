@@ -17,11 +17,14 @@ type OptionData interface {
 	IsValid() bool
 }
 
+// IsDefault checks if opt uses default Option handling.
+// See OptionDataDefault
 func (opt Option) IsDefault() bool {
 	_, ok := opt.Data.(OptionDataDefault)
 	return ok
 }
 
+// String returns a verbose, human-readable string from opt
 func (opt Option) String() string {
 	var sb strings.Builder
 
@@ -32,6 +35,8 @@ func (opt Option) String() string {
 	return sb.String()
 }
 
+// IsValid checks if opt is a valid Option.
+// Will return false if OptionData is invalid or the OptionCode is not recognized
 func (opt Option) IsValid() bool {
 	if opt.Code.String() == "" || !opt.Data.IsValid() {
 		return false
@@ -40,6 +45,7 @@ func (opt Option) IsValid() bool {
 	return true
 }
 
+// Marshal returns an encoded Options entry
 func (opt Option) Marshal() ([]byte, error) {
 	data, err := opt.Data.Marshal()
 	if err != nil {

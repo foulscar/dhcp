@@ -5,22 +5,27 @@ type OptionCodeMapping struct {
 	ToDataUnmarshaller map[OptionCode]OptionDataUnmarshaller
 }
 
-// You can define custom behavior here
 var GlobalOptionCodeMapping = OptionCodeMapping{
 	ToString:           OptionCodeToString,
 	ToDataUnmarshaller: OptionCodeToDataUnmarshaller,
 }
 
-func (m OptionCodeMapping) GetString(code OptionCode) string { return m.ToString[code] }
+// GetString returns the human-readable name represented by the OptionCode.
+// It will fetch this value from optCodeMap
+func (optCodeMap OptionCodeMapping) GetString(code OptionCode) string {
+        return optCodeMap.ToString[code]
+}
 
-func (m OptionCodeMapping) GetDataUnmarshaller(code OptionCode) OptionDataUnmarshaller {
+// GetDataUnmarshaller returns the the OptionDataUnmarshaller associated with the OptionCode.
+// It will fetch this value from optCodeMap
+func (optCodeMap OptionCodeMapping) GetDataUnmarshaller(code OptionCode) OptionDataUnmarshaller {
 	if code == OptionCodePad || code == OptionCodeEnd {
 		return nil
 	}
-	if m.ToDataUnmarshaller[code] == nil {
+	if optCodeMap.ToDataUnmarshaller[code] == nil {
 		return UnmarshalOptionDefault
 	}
-	return m.ToDataUnmarshaller[code]
+	return optCodeMap.ToDataUnmarshaller[code]
 }
 
 var optMap = &GlobalOptionCodeMapping

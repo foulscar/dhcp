@@ -6,6 +6,8 @@ import (
 	"net"
 )
 
+// UnmarshalMessage parses the dhcpv4 encoded message from data and returns a pointer to a Message.
+// It will first check if it is a dhcp message but will not test full validity (use Message.IsValid())
 func UnmarshalMessage(data []byte) (*Message, error) {
 	if !IsEncodedMessage(data) {
 		return nil, errors.New("data does not contain an encoded dhcp message")

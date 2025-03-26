@@ -5,7 +5,9 @@ import (
 	"net"
 )
 
-var RequiredParamsDISCOVER = []OptionCode{
+// RequiredParamsDISCOVER contains a list of the minimum OptionCodes that must be specified
+// in a Message's Parameter Request List Option for it to be valid as a DISCOVER Message
+var requiredParamsDISCOVER = []OptionCode{
 	OptionCodeSubnetMask,
 	OptionCodeRouter,
 	OptionCodeDNS,
@@ -13,7 +15,8 @@ var RequiredParamsDISCOVER = []OptionCode{
 	OptionCodeBroadcastAddr,
 }
 
-func NewDISCOVER(
+// NewDISCOVER returns a Message, ready for use as a DISCOVER Message
+func newDISCOVER(
 	clientMacAddr net.HardwareAddr,
 	paramsRequested ...OptionCode,
 ) (*Message, error) {
@@ -27,7 +30,7 @@ func NewDISCOVER(
 
 	params := make([]OptionCode, len(paramsRequested))
 	copy(params, paramsRequested)
-	for _, requiredOptC := range RequiredParamsDISCOVER {
+	for _, requiredOptC := range requiredParamsDISCOVER {
 		contains := false
 		for _, optC := range params {
 			if optC == requiredOptC {
