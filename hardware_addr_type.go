@@ -4,7 +4,11 @@ package dhcp
 // This package currently only contains Ethernet
 type HardwareAddrType uint8
 
-const HardwareAddrTypeEthernet = 1
+// Hardware Address Types recognized by this package.
+// Currently only contains Ethernet
+const (
+	HardwareAddrTypeEthernet = 1
+)
 
 var hardwareAddrTypeToString = map[HardwareAddrType]string{
 	HardwareAddrTypeEthernet: "Ethernet",

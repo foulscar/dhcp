@@ -4,6 +4,7 @@ package dhcp
 // This package currently only contains presets for Unicast and Broadcast
 type Flags uint16
 
+// Available Flags presets this package offers
 const (
 	FlagsUnicast   Flags = 0x0
 	FlagsBroadcast Flags = 0x8000

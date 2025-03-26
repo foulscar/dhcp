@@ -6,11 +6,13 @@ import (
 	"strings"
 )
 
+// Option represents a DHCP Message Options Entry
 type Option struct {
 	Code OptionCode
 	Data OptionData
 }
 
+// OptionData should hold the value of the represented Option Type
 type OptionData interface {
 	Marshal() ([]byte, error)
 	String() string

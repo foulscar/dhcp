@@ -10,6 +10,7 @@ type OptionDataMessageType struct {
 // OptionMessageTypeCode represents a DHCP Message Type
 type OptionMessageTypeCode uint8
 
+// All recognized DHCP Message Type Codes
 const (
 	OptionMessageTypeCodeDISCOVER OptionMessageTypeCode = 1
 	OptionMessageTypeCodeOFFER    OptionMessageTypeCode = 2

@@ -4,6 +4,7 @@ package dhcp
 // REQUEST or REPLY
 type BOOTPMessageType uint8
 
+// All recognized BOOTP Message Types
 const (
 	BOOTPMessageTypeRequest BOOTPMessageType = 1
 	BOOTPMessageTypeReply   BOOTPMessageType = 2
