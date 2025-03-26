@@ -17,5 +17,5 @@ var bootpMessageTypeToString = map[BOOTPMessageType]string{
 // String returns the name of the BOOTP Message Type associated with msgType.
 // "REQUEST" or "REPLY"
 func (msgType BOOTPMessageType) String() string {
-        return bootpMessageTypeToString[msgType]
+	return bootpMessageTypeToString[msgType]
 }

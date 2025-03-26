@@ -38,7 +38,7 @@ func (optD OptionDataParameterRequestList) IsValid() bool {
 	return true
 }
 
-// Marshal encodes optD as the value for a Parameters Request List Option 
+// Marshal encodes optD as the value for a Parameters Request List Option
 func (optD OptionDataParameterRequestList) Marshal() ([]byte, error) {
 	if !optD.IsValid() {
 		return nil, errors.New("option data is invalid")

@@ -16,7 +16,7 @@ var hardwareAddrLengths = map[HardwareAddrType]uint8{
 
 // String returns a human-readable version of HardwareAddrType
 func (hw HardwareAddrType) String() string {
-        return hardwareAddrTypeToString[hw]
+	return hardwareAddrTypeToString[hw]
 }
 
 // ValidLength returns the valid length a hardware address of HardwareAddrType type can be.

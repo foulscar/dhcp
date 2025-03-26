@@ -13,7 +13,7 @@ var GlobalOptionCodeMapping = OptionCodeMapping{
 // GetString returns the human-readable name represented by the OptionCode.
 // It will fetch this value from optCodeMap
 func (optCodeMap OptionCodeMapping) GetString(code OptionCode) string {
-        return optCodeMap.ToString[code]
+	return optCodeMap.ToString[code]
 }
 
 // GetDataUnmarshaller returns the the OptionDataUnmarshaller associated with the OptionCode.
