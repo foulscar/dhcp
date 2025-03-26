@@ -5,8 +5,10 @@ import (
 	"strings"
 )
 
+// Options represents a DHCP Message's Options
 type Options map[OptionCode]Option
 
+// String returns a verbose, multi-line string of all the Option Entries
 func (opts Options) String() string {
 	var sb strings.Builder
 
@@ -26,23 +28,28 @@ func (opts Options) String() string {
 	return sb.String()
 }
 
+// Add adds opt to opts
 func (opts Options) Add(opt Option) {
 	opts[opt.Code] = opt
 }
 
+// Update swaps/creates an Option entry in opts according to opt.Code
 func (opts Options) Update(opt Option) {
 	opts[opt.Code] = opt
 }
 
+// Remove removes the Option associated with optCode from opts
 func (opts Options) Remove(optCode OptionCode) {
 	delete(opts, optCode)
 }
 
+// Contains returns true if there is an Option entry associated with code in opts
 func (opts Options) Contains(code OptionCode) bool {
 	_, exists := opts[code]
 	return exists
 }
 
+// IsValid returns true if all Option Entries in opts are valid
 func (opts Options) IsValid() bool {
 	for _, opt := range opts {
 		if !opt.IsValid() {
@@ -53,6 +60,7 @@ func (opts Options) IsValid() bool {
 	return true
 }
 
+// Marshal encodes opts as an Options field for a DHCP Message
 func (opts Options) Marshal() ([]byte, error) {
 	var data []byte
 	for _, opt := range opts {
@@ -68,6 +76,7 @@ func (opts Options) Marshal() ([]byte, error) {
 	return data, nil
 }
 
+// UnmarshalOptions parses data as an Option field from a DHCP Message
 func UnmarshalOptions(data []byte) (Options, []error) {
 	opts := make(Options)
 	var errs []error

@@ -9,6 +9,7 @@ func (code OptionCode) String() string {
 	return optMap.ToString[code]
 }
 
+// All recognized OptionCodes
 const (
 	OptionCodePad                                        OptionCode = 0
 	OptionCodeSubnetMask                                 OptionCode = 1
@@ -88,6 +89,8 @@ const (
 	OptionCodeEnd                                        OptionCode = 255
 )
 
+// You can change these values before your program's main execution to affect how
+// Options/OptionCodes are named when logging, debugging, etc.
 var OptionCodeToString = map[OptionCode]string{
 	OptionCodeSubnetMask:                                 "Subnet Mask",
 	OptionCodeTimeOffset:                                 "Time Offset",
@@ -165,6 +168,8 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeSTDAServer:                                 "StreetTalk Directory Assistance Server",
 }
 
+// You can change these values before your program's main execution to affect
+// the behavior of parsed DHCP Messages
 var OptionCodeToDataUnmarshaller = map[OptionCode]OptionDataUnmarshaller{
 	OptionCodeSubnetMask:           UnmarshalOptionDataSubnetMask,
 	OptionCodeMessageType:          UnmarshalOptionDataMessageType,
