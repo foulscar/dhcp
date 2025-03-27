@@ -91,7 +91,7 @@ const (
 	OptionCodeEnd                                        OptionCode = 255
 )
 
-// OptionCodeToString holds the human-readable strings associated with OptionCodes
+// OptionCodeToString holds the human-readable strings associated with OptionCodes.
 // You can change these values before your program's main execution to affect how
 // Options/OptionCodes are named when logging, debugging, etc.
 var OptionCodeToString = map[OptionCode]string{
@@ -171,7 +171,7 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeSTDAServer:                                 "StreetTalk Directory Assistance Server",
 }
 
-// OptionCodeToDataUnmarshaller holds OptionData constructors associated with their relevant OptionCode
+// OptionCodeToDataUnmarshaller holds OptionData constructors associated with their relevant OptionCode.
 // You can change these values before your program's main execution to affect
 // the behavior of parsed DHCP Messages
 var OptionCodeToDataUnmarshaller = map[OptionCode]OptionDataUnmarshaller{
