@@ -29,9 +29,12 @@ func (opts Options) String() string {
 }
 
 // Add updates/creates an entry in opts for each Option given
-func (opts Options) Add(newOpts ...Option) {
+func (opts Options) Add(newOpts ...*Option) {
 	for _, opt := range newOpts {
-		opts[opt.Code] = opt
+		if opt == nil {
+			continue
+		}
+		opts[opt.Code] = *opt
 	}
 }
 

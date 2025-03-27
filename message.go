@@ -9,21 +9,50 @@ import (
 
 // Message represents a DHCPv4 packet header and options
 type Message struct {
-	BOOTPMessageType   BOOTPMessageType
-	HardwareAddrType   HardwareAddrType
-	HardwareAddrLen    uint8
-	HopCount           uint8
-	TransactionID      uint32
-	SecsElapsed        uint16
-	Flags              Flags
-	ClientIPAddr       net.IP
-	YourIPAddr         net.IP
-	ServerIPAddr       net.IP
-	GatewayIPAddr      net.IP
+	// REQUEST or REPLY
+	BOOTPMessageType BOOTPMessageType
+
+	// Type of the Client Hardware Address (normally ethernet/mac)
+	HardwareAddrType HardwareAddrType
+
+	// Length of the Hardware Address
+	HardwareAddrLen uint8
+
+	// Number of hops made to reach a client/server (set by relay agents)
+	HopCount uint8
+
+	// Unique ID for the current message exchange
+	TransactionID uint32
+
+	// Number of seconds since a client has started the DHCP process
+	SecsElapsed uint16
+
+	// Used to indicate if a server can use unicast or if it must use broadcast
+	Flags Flags
+
+	// Client IPv4 Address if known
+	ClientIPAddr net.IP
+
+	// "Your" IPv4 Address (assigned to client)
+	YourIPAddr net.IP
+
+	// Server IPv4 Address
+	ServerIPAddr net.IP
+
+	// Relay Agent IPv4 Address
+	GatewayIPAddr net.IP
+
+	// Client Hardware Address
 	ClientHardwareAddr net.HardwareAddr
-	ServerHostname     string
-	BootFilename       string
-	Options            Options
+
+	// Optional Server Hostname
+	ServerHostname string
+
+	// Optional Boot Filename (used for PXE Boot)
+	BootFilename string
+
+	// Option Fields mapped by their OptionCode
+	Options Options
 }
 
 // String parses msg and returns a verbose, multi-line string of the entire Message and it's Options
@@ -78,14 +107,25 @@ func (msg Message) String() string {
 	return sb.String()
 }
 
-func newEmptyMessage() Message {
+// NewMessage is a helper function that constructs a default Message that you can alter.
+// This function uses pre-defined constructors, therefor if you are not
+// using default mappings in GlobalOptionCodeMapping, you should not use this
+func NewMessage() Message {
 	msg := Message{}
+	msg.BOOTPMessageType = BOOTPMessageTypeReply
+	msg.HardwareAddrType = HardwareAddrTypeEthernet
+	msg.HardwareAddrLen = HardwareAddrTypeEthernet.ValidLength()
+	msg.Flags = FlagsBroadcast
 	msg.ClientIPAddr = net.IPv4zero
 	msg.YourIPAddr = net.IPv4zero
 	msg.ServerIPAddr = net.IPv4zero
 	msg.GatewayIPAddr = net.IPv4zero
 	msg.ClientHardwareAddr = make(net.HardwareAddr, 6)
 	msg.Options = make(Options)
+
+	optMsgType, _ := NewOptionMessageType(OptionMessageTypeCodeNACK)
+
+	msg.Options.Add(optMsgType)
 
 	return msg
 }
