@@ -5,7 +5,8 @@ import (
 	"strings"
 )
 
-// OptionDataParameterRequestList represents data for the Parameter Request List Option
+// OptionDataParameterRequestList represents data for the DHCP Parameter Request List Option.
+// It holds a list of parameters (OptionCodes) requested by a client.
 type OptionDataParameterRequestList struct {
 	List []OptionCode
 }
@@ -38,7 +39,7 @@ func (optD OptionDataParameterRequestList) IsValid() bool {
 	return true
 }
 
-// Marshal encodes optD as the value for a Parameters Request List Option
+// Marshal encodes optD as the value for a DHCP Parameters Request List Option
 func (optD OptionDataParameterRequestList) Marshal() ([]byte, error) {
 	if !optD.IsValid() {
 		return nil, errors.New("option data is invalid")
@@ -56,7 +57,7 @@ func (optD OptionDataParameterRequestList) Add(optCodes ...OptionCode) {
 	optD.List = append(optD.List, optCodes...)
 }
 
-// UnmarshalOptionDataParameterRequestList parses data as the value for a Parameter Request List Option
+// UnmarshalOptionDataParameterRequestList parses data as the value for a DHCP Parameter Request List Option
 func UnmarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 	list := make([]OptionCode, len(data))
 	for i, b := range data {
@@ -72,17 +73,18 @@ func UnmarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 
 // NewOptionParameterRequestList is a helper function for constructing a Parameter Request List Option.
 // It will hold OptionDataParameterRequestList as the Option's Data
-func NewOptionParameterRequestList(optCodes ...OptionCode) Option {
+func NewOptionParameterRequestList(optCodes ...OptionCode) *Option {
 	opt := Option{
 		Code: OptionCodeParameterRequestList,
 		Data: OptionDataParameterRequestList{
 			List: make([]OptionCode, 0),
 		},
+		IsDefault: false,
 	}
 
 	for _, optCode := range optCodes {
 		opt.Data.(OptionDataParameterRequestList).Add(optCode)
 	}
 
-	return opt
+	return &opt
 }

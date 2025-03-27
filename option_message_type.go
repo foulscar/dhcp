@@ -86,14 +86,15 @@ func UnmarshalOptionDataMessageType(data []byte) (OptionData, error) {
 
 // NewOptionMessageType is a helper function for constructing a DHCP Message Type Option.
 // It will hold OptionDataMessageType as the Option's Data
-func NewOptionMessageType(msgType OptionMessageTypeCode) (Option, error) {
+func NewOptionMessageType(msgType OptionMessageTypeCode) (*Option, error) {
 	_, exists := optionMessageTypeCodeToString[msgType]
 	if !exists {
-		return Option{}, errors.New("invalid message type")
+		return nil, errors.New("invalid message type")
 	}
 
-	return Option{
-		Code: OptionCodeMessageType,
-		Data: OptionDataMessageType{Type: msgType},
+	return &Option{
+		Code:      OptionCodeMessageType,
+		Data:      OptionDataMessageType{Type: msgType},
+		IsDefault: false,
 	}, nil
 }
