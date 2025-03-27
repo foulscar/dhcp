@@ -30,20 +30,14 @@ func (msg Message) SetMessageType(msgType OptionMessageTypeCode) error {
 	if err != nil {
 		return err
 	}
-	msg.Options.Update(opt)
+	msg.Options.Add(opt)
 
 	return nil
 }
 
-// AddOption adds the Option to msg.Options
-func (msg Message) AddOption(opt Option) {
-	msg.Options.Add(opt)
-}
-
-// UpdateOption swaps the existing Option entry associated with your Option's OptionCode with your Option.
-// It will create an entry in msg.Options if one doesn't already exist
-func (msg Message) UpdateOption(opt Option) {
-	msg.Options.Update(opt)
+// AddOption updates/adds the Options to msg.Options
+func (msg Message) AddOptions(opts ...*Option) {
+	msg.Options.Add(opts...)
 }
 
 // RemoveOption removes your OptionCode's entry from msg.Options
