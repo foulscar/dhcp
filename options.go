@@ -28,14 +28,11 @@ func (opts Options) String() string {
 	return sb.String()
 }
 
-// Add adds opt to opts
-func (opts Options) Add(opt Option) {
-	opts[opt.Code] = opt
-}
-
-// Update swaps/creates an Option entry in opts according to opt.Code
-func (opts Options) Update(opt Option) {
-	opts[opt.Code] = opt
+// Add updates/creates an entry in opts for each Option given
+func (opts Options) Add(newOpts ...Option) {
+	for _, opt := range newOpts {
+		opts[opt.Code] = opt
+	}
 }
 
 // Remove removes the Option associated with optCode from opts
