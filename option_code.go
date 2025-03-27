@@ -176,6 +176,7 @@ var OptionCodeToString = map[OptionCode]string{
 // the behavior of parsed DHCP Messages
 var OptionCodeToDataUnmarshaller = map[OptionCode]OptionDataUnmarshaller{
 	OptionCodeSubnetMask:           UnmarshalOptionDataSubnetMask,
+	OptionCodeRouter:               UnmarshalOptionDataRouter,
 	OptionCodeMessageType:          UnmarshalOptionDataMessageType,
 	OptionCodeParameterRequestList: UnmarshalOptionDataParameterRequestList,
 }
