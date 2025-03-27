@@ -5,7 +5,9 @@ package dhcp
 // see GlobalOptionCodeMapping
 type OptionCodeMapping struct {
 	ToString                map[OptionCode]string
+	ToDataType              map[OptionCode]OptionData
 	ToDataUnmarshaller      map[OptionCode]OptionDataUnmarshaller
+	DefaultDataType         OptionData
 	DefaultDataUnmarshaller OptionDataUnmarshaller
 }
 
@@ -16,7 +18,9 @@ type OptionCodeMapping struct {
 // Leaving this unchanged will result in default behavior
 var GlobalOptionCodeMapping = OptionCodeMapping{
 	ToString:                OptionCodeToString,
+	ToDataType:              OptionCodeToDataType,
 	ToDataUnmarshaller:      OptionCodeToDataUnmarshaller,
+	DefaultDataType:         OptionDataDefault{},
 	DefaultDataUnmarshaller: UnmarshalOptionDefault,
 }
 
@@ -24,6 +28,20 @@ var GlobalOptionCodeMapping = OptionCodeMapping{
 // It will fetch this value from optCodeMap
 func (optCodeMap OptionCodeMapping) GetString(code OptionCode) string {
 	return optCodeMap.ToString[code]
+}
+
+// GetDataType returns the the OptionData implementation associated with the OptionCode and
+// a boolean that is true if returning the default OptionData implementation. If the OptionCode does
+// not have a mapping, the default OptionData implementation will be returned.
+// It will fetch this value from optCodeMap
+func (optCodeMap OptionCodeMapping) GetDataType(code OptionCode) (data OptionData, isDefault bool) {
+	if code == OptionCodePad || code == OptionCodeEnd {
+		return nil, false
+	}
+	if optCodeMap.ToDataType[code] == nil {
+		return optCodeMap.DefaultDataType, true
+	}
+	return optCodeMap.ToDataType[code], false
 }
 
 // GetDataUnmarshaller returns the the OptionDataUnmarshaller associated with the OptionCode and

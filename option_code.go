@@ -171,9 +171,19 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeSTDAServer:                                 "StreetTalk Directory Assistance Server",
 }
 
-// OptionCodeToDataUnmarshaller holds OptionData constructors associated with their relevant OptionCode.
+// OptionCodeToDataType maps OptionData implementations to their relevant OptionCode.
 // You can change these values before your program's main execution to affect
-// the behavior of parsed DHCP Messages
+// the behavior of this package
+var OptionCodeToDataType = map[OptionCode]OptionData{
+	OptionCodeSubnetMask:           OptionDataSubnetMask{},
+	OptionCodeRouter:               OptionDataRouter{},
+	OptionCodeMessageType:          OptionDataMessageType{},
+	OptionCodeParameterRequestList: OptionDataParameterRequestList{},
+}
+
+// OptionCodeToDataUnmarshaller maps OptionData constructors to their relevant OptionCode.
+// You can change these values before your program's main execution to affect
+// the behavior of this package
 var OptionCodeToDataUnmarshaller = map[OptionCode]OptionDataUnmarshaller{
 	OptionCodeSubnetMask:           UnmarshalOptionDataSubnetMask,
 	OptionCodeRouter:               UnmarshalOptionDataRouter,
