@@ -24,17 +24,17 @@ func newServer(ifaceName string) (*server, error) {
 }
 
 func (s *server) listenThenClose() {
-        fmt.Println("Server Listening")
+	fmt.Println("Server Listening")
 	buffer := make([]byte, 2048)
 	for {
 		n, err := s.conn.Read(buffer)
-                if err != nil {
-                        continue
-                }
+		if err != nil {
+			continue
+		}
 
-                if !dhcp.IsEncodedMessage(buffer[:n]) {
-                        continue
-                }
+		if !dhcp.IsEncodedMessage(buffer[:n]) {
+			continue
+		}
 
 		msg, err := dhcp.UnmarshalMessage(buffer[:n])
 		if err != nil {
@@ -46,5 +46,5 @@ func (s *server) listenThenClose() {
 }
 
 func (s *server) stop() {
-        s.conn.Close()
+	s.conn.Close()
 }

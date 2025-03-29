@@ -5,12 +5,11 @@ import (
 )
 
 func main() {
-        fmt.Println("Starting Server")
+	fmt.Println("Starting Server")
 	s, err := newServer("enp0s2")
 	if err != nil {
 		panic(err)
 	}
-
 
 	defer s.stop()
 	go s.listenThenClose()
@@ -18,7 +17,7 @@ func main() {
 	for {
 		msg := <-s.messages
 
-                fmt.Print("\n\nReceived DHCP Message\n\n")
+		fmt.Print("\n\nReceived DHCP Message\n\n")
 		fmt.Println(msg)
 	}
 }
