@@ -10,9 +10,9 @@ DHCPv4 encoding/decoding package, with customizable behvaior
 - Ability to override builtin option handlers and/or add vendor-specific options
 - Modifying mappings changes behavior across almost the entire package
 ## Usage
-To use this package, find the latest tag and run
+To use this package, find the latest stable tag and run
 ```bash
-go get github.com/foulscar/dhcp@LATEST_TAG_HERE
+go get github.com/foulscar/dhcp@LATEST_STABLE_TAG_HERE
 ```
 ## Examples
 Below are examples showcasing various usecases
