@@ -300,7 +300,17 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeQueryEndTime:                               "Query End Time",
 	OptionCodeDHCP_State:                                 "DHCP State",
 	OptionCodeDataSrc:                                    "Data Source",
+	OptionCodePCP_Server:                                 "PCP Server",
+	OptionCodePortParams:                                 "Port Parameters",
+	OptionCodeMUD_URL:                                    "Manufacturer Usage Descriptions",
+	OptionCodeDNR:                                        "Encrypted DNS Server",
 	OptionCodePXE_LinuxMagicString:                       "PXE Linux Magic String",
+	OptionCodeConfigFile:                                 "Config File",
+	OptionCodePathPrefix:                                 "Path Prefix",
+	OptionCodeRebootTime:                                 "Reboot Time",
+	OptionCodeAccessDomain:                               "Access Domain",
+	OptionCodeSubnetAllocation:                           "Subnet Allocation",
+	OptionCodeVirtualSubnetSelection:                     "Virtual Subnet Selection",
 }
 
 // OptionCodeToDataType maps OptionData implementations to their relevant OptionCode.
