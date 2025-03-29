@@ -14,6 +14,8 @@ To use this package, find the latest stable tag and run
 ```bash
 go get github.com/foulscar/dhcp@LATEST_STABLE_TAG_HERE
 ```
+## Documentation
+[Go Docs](https://pkg.go.dev/github.com/foulscar/dhcp)
 ## Examples
 Below are examples showcasing various usecases
 
