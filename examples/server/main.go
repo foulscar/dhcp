@@ -17,6 +17,8 @@ func main() {
 
 	for {
 		msg := <-s.messages
-		fmt.Println(len(msg.Options))
+
+                fmt.Println("\n\nReceived DHCP Message\n")
+		fmt.Println(msg)
 	}
 }

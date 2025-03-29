@@ -22,7 +22,11 @@ func (optD OptionDataParameterRequestList) String() string {
 		if i != 0 {
 			sb.WriteString(", ")
 		}
-		sb.WriteString(optC.String())
+		name := optC.String()
+		if name == "" {
+			name = "UNKNOWN"
+		}
+		sb.WriteString(name)
 	}
 	sb.WriteString("]")
 
