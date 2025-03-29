@@ -1,5 +1,5 @@
 # dhcp
-DHCPv4 encoding/decoding package, with customizable behvaior
+DHCPv4 encoding/decoding package, with the ability to add user-defined behavior
 ## What dhcp comes with builtin
 - Basic encoding/decoding of messages and options
 - Constants of almost all recognized DHCP Option Codes, with a mapping to a human-readable string
