@@ -14,7 +14,7 @@ import (
 func modifyGlobalMapping() {
 	optCodeMap := &dhcp.GlobalOptionCodeMapping
 
-	optCodeMap.ToString[OptionCodeVendor_ABC] = "Vendor ABC Specific Option"
-	optCodeMap.ToDataType[OptionCodeVendor_ABC] = OptionDataVendor_ABC{}
-	optCodeMap.ToDataUnmarshaller[OptionCodeVendor_ABC] = UnmarshalOptionDataVendor_ABC
+	optCodeMap.ToString[OptionCodeVendorABC] = "Vendor ABC Specific Option"
+	optCodeMap.ToDataType[OptionCodeVendorABC] = OptionDataVendorABC{}
+	optCodeMap.ToDataUnmarshaller[OptionCodeVendorABC] = UnmarshalOptionDataVendorABC
 }

@@ -10,14 +10,14 @@ import (
 	"github.com/foulscar/dhcp"
 )
 
-const OptionCodeVendor_ABC dhcp.OptionCode = 222
+const OptionCodeVendorABC dhcp.OptionCode = 222
 
 // This struct implements dhcp.OptionData
-type OptionDataVendor_ABC struct {
+type OptionDataVendorABC struct {
 	Tag string
 }
 
-func (optD OptionDataVendor_ABC) String() string {
+func (optD OptionDataVendorABC) String() string {
 	switch optD.Tag {
 	case "cat":
 		return "Cat"
@@ -29,7 +29,7 @@ func (optD OptionDataVendor_ABC) String() string {
 	return "Unknown Tag"
 }
 
-func (optD OptionDataVendor_ABC) IsValid() bool {
+func (optD OptionDataVendorABC) IsValid() bool {
 	switch optD.Tag {
 	case "cat":
 		return true
@@ -40,22 +40,22 @@ func (optD OptionDataVendor_ABC) IsValid() bool {
 	return false
 }
 
-func (optD OptionDataVendor_ABC) Marshal() ([]byte, error) {
+func (optD OptionDataVendorABC) Marshal() ([]byte, error) {
 	return []byte(optD.Tag), nil
 }
 
-func UnmarshalOptionDataVendor_ABC(data []byte) (dhcp.OptionData, error) {
-	return OptionDataVendor_ABC{Tag: string(data)}, nil
+func UnmarshalOptionDataVendorABC(data []byte) (dhcp.OptionData, error) {
+	return OptionDataVendorABC{Tag: string(data)}, nil
 }
 
-func NewOptionVendor_ABC(tag string) (*dhcp.Option, error) {
-	data := OptionDataVendor_ABC{Tag: tag}
+func NewOptionVendorABC(tag string) (*dhcp.Option, error) {
+	data := OptionDataVendorABC{Tag: tag}
 	if !data.IsValid() {
 		return nil, fmt.Errorf("invalid tag: '%s'", tag)
 	}
 
 	return &dhcp.Option{
-		Code:      OptionCodeVendor_ABC,
+		Code:      OptionCodeVendorABC,
 		Data:      data,
 		IsDefault: false,
 	}, nil

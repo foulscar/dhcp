@@ -17,7 +17,7 @@ func main() {
 	msgA.SetMessageType(dhcp.OptionMessageTypeCodeDISCOVER)
 	msgA.BOOTPMessageType = dhcp.BOOTPMessageTypeRequest
 
-	ourOpt, err := NewOptionVendor_ABC("dog")
+	ourOpt, err := NewOptionVendorABC("dog")
 	if err != nil {
 		fmt.Println("error creating ourOpt.", err)
 		os.Exit(1)
@@ -43,9 +43,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("This is our original message (msgA):\n")
-	fmt.Println(msgA)
+	fmt.Print("This is our original message (msgA):\n\n")
+	fmt.Print(msgA,"\n\n")
 
-	fmt.Println("\nThis is our message after marshalling then unmarshalling (msgB):\n")
+	fmt.Print("This is our message after marshalling then unmarshalling (msgB):\n\n")
 	fmt.Println(*msgB)
 }

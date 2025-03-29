@@ -35,7 +35,7 @@ func (msg Message) SetMessageType(msgType OptionMessageTypeCode) error {
 	return nil
 }
 
-// AddOption updates/adds the Options to msg.Options
+// AddOptions updates/adds the Options to msg.Options
 func (msg Message) AddOptions(opts ...*Option) {
 	msg.Options.Add(opts...)
 }
