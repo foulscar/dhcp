@@ -94,6 +94,8 @@ func (opts Options) Marshal() ([]byte, error) {
 		if !valid || err != nil {
 			return nil, fmt.Errorf("could not marshal options. option with code '%d' is invalid", int(opt.Code))
 		}
+		data = append(data, byte(opt.Code))
+		data = append(data, byte(len(optData)))
 		data = append(data, optData...)
 	}
 	data = append(data, byte(OptionCodeEnd))
