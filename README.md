@@ -8,7 +8,7 @@ DHCPv4 encoding/decoding package, with customizable behvaior
 ## Where dhcp makes customization easy
 - Ability to give different Options user-defined handling/behavior, using global mappings
 - Ability to override builtin option handlers and/or add vendor-specific options
-- Modifying mappings changes behvaior across almost the entire package
+- Modifying mappings changes behavior across almost the entire package
 ## Usage
 To use this package, find the latest tag and run
 ```bash
