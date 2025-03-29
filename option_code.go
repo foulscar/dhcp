@@ -26,7 +26,7 @@ const (
 	OptionCodeDNS                                        OptionCode = 6
 	OptionCodeLogServer                                  OptionCode = 7
 	OptionCodeCookieServer                               OptionCode = 8
-	OptionCodeLRP_Server                                 OptionCode = 9
+	OptionCodeLRPServer                                  OptionCode = 9
 	OptionCodeImpressServer                              OptionCode = 10
 	OptionCodeResourceLocationServer                     OptionCode = 11
 	OptionCodeHostname                                   OptionCode = 12
@@ -116,7 +116,7 @@ const (
 	OptionCodePCode                                      OptionCode = 100
 	OptionCodeTCode                                      OptionCode = 101
 	OptionCodeIPv6OnlyPreferred                          OptionCode = 108
-	OptionCodeDHCP4O6_S46_SADDR                          OptionCode = 109
+	OptionCodeDHCP4O6S46SADDR                            OptionCode = 109
 	OptionCodeNetInfoAddr                                OptionCode = 112
 	OptionCodeNetInfoTag                                 OptionCode = 113
 	OptionCodeDHCPCaptivePortal                          OptionCode = 114
@@ -134,7 +134,7 @@ const (
 	OptionCodeLost                                       OptionCode = 137
 	OptionCodeCAPWAPAccessControllerAddrs                OptionCode = 138
 	OptionCodeIPv4AddrMOS                                OptionCode = 139
-	OptionCodeIPv4FQDN_MOS                               OptionCode = 140
+	OptionCodeIPv4FQDNMOS                                OptionCode = 140
 	OptionCodeSIPUserAgentConfDomains                    OptionCode = 141
 	OptionCodeANDSFIPv4Addr                              OptionCode = 142
 	OptionCodeSZTPREDIRECT                               OptionCode = 143
@@ -154,7 +154,7 @@ const (
 	OptionCodePortParams                                 OptionCode = 159
 	OptionCodeMUDURL                                     OptionCode = 161
 	OptionCodeDNR                                        OptionCode = 162
-	OptionCodePXE_LinuxMagicString                       OptionCode = 208
+	OptionCodePXELinuxMagicString                        OptionCode = 208
 	OptionCodeConfigFile                                 OptionCode = 209
 	OptionCodePathPrefix                                 OptionCode = 210
 	OptionCodeRebootTime                                 OptionCode = 211
@@ -176,7 +176,7 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeDNS:                                        "Domain Name Server",
 	OptionCodeLogServer:                                  "Log Server",
 	OptionCodeCookieServer:                               "Cookie Server",
-	OptionCodeLRP_Server:                                 "LPR Server",
+	OptionCodeLRPServer:                                  "LPR Server",
 	OptionCodeImpressServer:                              "Impress Server",
 	OptionCodeResourceLocationServer:                     "Resource Location Server",
 	OptionCodeHostname:                                   "Host Name",
@@ -266,7 +266,7 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodePCode:                                      "PCode",
 	OptionCodeTCode:                                      "TCode",
 	OptionCodeIPv6OnlyPreferred:                          "IPv6-Only Preferred",
-	OptionCodeDHCP4O6_S46_SADDR:                          "DHCP 4o6 S46 SADDR",
+	OptionCodeDHCP4O6S46SADDR:                            "DHCP 4o6 S46 SADDR",
 	OptionCodeNetInfoAddr:                                "NetInfo Address",
 	OptionCodeNetInfoTag:                                 "NetInfo Tag",
 	OptionCodeDHCPCaptivePortal:                          "DHCP Captive Portal",
@@ -284,7 +284,7 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodeLost:                                       "Lost",
 	OptionCodeCAPWAPAccessControllerAddrs:                "CAPWAP Access Controller Addresses",
 	OptionCodeIPv4AddrMOS:                                "IPv4 Address MOS",
-	OptionCodeIPv4FQDN_MOS:                               "IPv4 FQDN MOS",
+	OptionCodeIPv4FQDNMOS:                                "IPv4 FQDN MOS",
 	OptionCodeSIPUserAgentConfDomains:                    "SIP User Agent Configuration Domains",
 	OptionCodeANDSFIPv4Addr:                              "ANDSF IPv4 Address",
 	OptionCodeSZTPREDIRECT:                               "SZTP Redirect",
@@ -304,7 +304,7 @@ var OptionCodeToString = map[OptionCode]string{
 	OptionCodePortParams:                                 "Port Parameters",
 	OptionCodeMUDURL:                                     "Manufacturer Usage Descriptions",
 	OptionCodeDNR:                                        "Encrypted DNS Server",
-	OptionCodePXE_LinuxMagicString:                       "PXE Linux Magic String",
+	OptionCodePXELinuxMagicString:                        "PXE Linux Magic String",
 	OptionCodeConfigFile:                                 "Config File",
 	OptionCodePathPrefix:                                 "Path Prefix",
 	OptionCodeRebootTime:                                 "Reboot Time",
