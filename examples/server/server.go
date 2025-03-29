@@ -8,7 +8,6 @@ import (
 type server struct {
 	conn     *dhcp.Conn
 	messages chan *dhcp.Message
-	stopChan chan bool
 }
 
 func newServer(ifaceName string) (*server, error) {
@@ -20,33 +19,32 @@ func newServer(ifaceName string) (*server, error) {
 
 	s.conn = conn
 	s.messages = make(chan *dhcp.Message)
-	s.stopChan = make(chan bool)
 
 	return s, nil
 }
 
 func (s *server) listenThenClose() {
-	data := make([]byte, 2048)
+        fmt.Println("Server Listening")
+	buffer := make([]byte, 2048)
 	for {
-		if <-s.stopChan {
-			break
-		}
+		n, err := s.conn.Read(buffer)
+                if err != nil {
+                        continue
+                }
 
-		n, _ := s.conn.Read(data)
-		if n < 240 {
-			continue
-		}
+                if !dhcp.IsEncodedMessage(buffer[:n]) {
+                        continue
+                }
 
-		msg, err := dhcp.UnmarshalMessage(data[:n])
+		msg, err := dhcp.UnmarshalMessage(buffer[:n])
 		if err != nil {
 			continue
 		}
 
 		s.messages <- msg
 	}
-	s.conn.Close()
 }
 
 func (s *server) stop() {
-	s.stopChan <- true
+        s.conn.Close()
 }

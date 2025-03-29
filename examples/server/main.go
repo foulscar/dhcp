@@ -5,17 +5,18 @@ import (
 )
 
 func main() {
-	s, err := newServer("enp0s1")
+        fmt.Println("Starting Server")
+	s, err := newServer("enp0s2")
 	if err != nil {
 		panic(err)
 	}
 
-	go s.listenThenClose()
 
 	defer s.stop()
+	go s.listenThenClose()
 
 	for {
 		msg := <-s.messages
-		fmt.Println(msg.String())
+		fmt.Println(len(msg.Options))
 	}
 }

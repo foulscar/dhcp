@@ -118,7 +118,7 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 		}
 
 		optLen := int(data[i+1])
-		if len(data) <= i+2+optLen {
+		if len(data) < i+2+optLen {
 			break
 		}
 
@@ -126,7 +126,7 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 		optData, err := optDataUnmarshaller(data[i+2 : i+2+optLen])
 		if err != nil {
 			errs = append(errs, err)
-			i += 1 + optLen
+			i += 2 + optLen
 			continue
 		}
 
@@ -137,7 +137,7 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 		}
 
 		opts[optCode] = opt
-		i += 1 + optLen
+		i += 2 + optLen
 	}
 
 	return opts, errs
