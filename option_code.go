@@ -13,9 +13,9 @@ func (code OptionCode) String() string {
 
 // Almost all recognized OptionCodes.
 // I have not included OptionCodes that have multiple recognized uses.
-// I gathered these from 'https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml'.
 // You can define your own within your own package then modify GlobalOptionCodeMapping
-// to contain strings, data types, and unmarshallers
+// to contain strings, data types, and unmarshallers.
+// I gathered these from https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml
 const (
 	OptionCodePad                                        OptionCode = 0
 	OptionCodeSubnetMask                                 OptionCode = 1
