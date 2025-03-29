@@ -5,16 +5,16 @@
 package main
 
 import (
-        "github.com/foulscar/dhcp"
+	"github.com/foulscar/dhcp"
 )
 
 // Here we modify the global OptionCodeMapping.
 // This changes the behavior of the dhcp package to incorporate
 // our custom (vendor-specific) option
 func modifyGlobalMapping() {
-        optCodeMap := &dhcp.GlobalOptionCodeMapping
+	optCodeMap := &dhcp.GlobalOptionCodeMapping
 
-        optCodeMap.ToString[OptionCodeVendor_ABC] = "Vendor ABC Specific Option"
-        optCodeMap.ToDataType[OptionCodeVendor_ABC] = OptionDataVendor_ABC{}
-        optCodeMap.ToDataUnmarshaller[OptionCodeVendor_ABC] = UnmarshalOptionDataVendor_ABC
+	optCodeMap.ToString[OptionCodeVendor_ABC] = "Vendor ABC Specific Option"
+	optCodeMap.ToDataType[OptionCodeVendor_ABC] = OptionDataVendor_ABC{}
+	optCodeMap.ToDataUnmarshaller[OptionCodeVendor_ABC] = UnmarshalOptionDataVendor_ABC
 }
