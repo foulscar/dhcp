@@ -12,7 +12,7 @@ DHCPv4 encoding/decoding package, with customizable behvaior
 ## Usage
 To use this package, find the latest tag and run
 ```bash
-go get -u github.com/foulscar/dhcp@LATEST_TAG_HERE
+go get github.com/foulscar/dhcp@LATEST_TAG_HERE
 ```
 ## Examples
 Below are examples showcasing various usecases
