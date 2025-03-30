@@ -1,7 +1,6 @@
 package dhcp
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -51,36 +50,22 @@ func (opts Options) Contains(code OptionCode) bool {
 }
 
 // IsValid returns true if all Option Entries in opts are valid
-func (opts Options) IsValid() (valid bool, reason string) {
-	invalidReasons := make([]string, 0)
-	for code, opt := range opts {
-		valid, reason := opt.IsValid()
-		if !valid {
-			invalidReasons = append(
-				invalidReasons, "OptionCode '"+
-					strconv.Itoa(int(code))+
-					"' is invalid. reason: "+
-					reason,
-			)
+func (opts Options) IsValid() *ErrorExt {
+	mainErr := NewErrorExt("Options with " + strconv.Itoa(len(opts)) + " options is invalid")
+
+	for _, opt := range opts {
+		err := opt.IsValid()
+		if err == nil {
+			continue
 		}
+		mainErr.Add(err)
 	}
 
-	if len(invalidReasons) == 0 {
-		return true, "ok"
+	if !mainErr.HasReasons() {
+		return nil
 	}
 
-	sb := strings.Builder{}
-
-	sb.WriteString("[")
-	for i, reason := range invalidReasons {
-		if i != 0 {
-			sb.WriteString(", ")
-		}
-		sb.WriteString(reason)
-	}
-	sb.WriteString("]")
-
-	return false, sb.String()
+	return mainErr
 }
 
 // GetDefaults returns a slice of all OptionCodes present in opts that are using default data handling.
@@ -109,27 +94,45 @@ func (opts Options) GetNonDefaults() []OptionCode {
 }
 
 // Marshal encodes opts as an Options field for a DHCP Message
-func (opts Options) Marshal() ([]byte, error) {
+func (opts Options) Marshal() ([]byte, *ErrorExt) {
+	mainErr := NewErrorExt("could not marshal Options")
+
 	var data []byte
 	for _, opt := range opts {
-		valid, reason := opt.IsValid()
-		optData, err := opt.Data.Marshal()
-		if !valid || err != nil {
-			return nil, fmt.Errorf("could not marshal options. option with code '%d' is invalid. reason: %s", int(opt.Code), reason)
+		optErr := opt.IsValid()
+		if optErr != nil {
+			mainErr.Add(optErr)
+			continue
 		}
+
+		optData, optDataErr := opt.Data.Marshal()
+		if optDataErr != nil {
+			mainErr.Add(NewErrorExt("Option with OptionCode '"+strconv.Itoa(int(opt.Code))+"' has invalid data", optDataErr))
+			continue
+		}
+
+		if mainErr.HasReasons() {
+			continue
+		}
+
 		data = append(data, byte(opt.Code))
 		data = append(data, byte(len(optData)))
 		data = append(data, optData...)
 	}
+
+	if mainErr.HasReasons() {
+		return nil, mainErr
+	}
+
 	data = append(data, byte(OptionCodeEnd))
 
 	return data, nil
 }
 
 // UnmarshalOptions parses data as an Options field from a DHCP Message
-func UnmarshalOptions(data []byte) (Options, []error) {
+func UnmarshalOptions(data []byte) (Options, *ErrorExt) {
+	mainErr := NewErrorExt("data contained invalid Options")
 	opts := make(Options)
-	var errs []error
 
 	i := 0
 	for i < len(data)-1 {
@@ -150,7 +153,7 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 		optDataUnmarshaller, isDefault := optMap.GetDataUnmarshaller(optCode)
 		optData, err := optDataUnmarshaller(data[i+2 : i+2+optLen])
 		if err != nil {
-			errs = append(errs, err)
+			mainErr.Add(err)
 			i += 2 + optLen
 			continue
 		}
@@ -165,5 +168,9 @@ func UnmarshalOptions(data []byte) (Options, []error) {
 		i += 2 + optLen
 	}
 
-	return opts, errs
+	if !mainErr.HasReasons() {
+		return opts, nil
+	}
+
+	return opts, mainErr
 }

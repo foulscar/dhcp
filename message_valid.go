@@ -16,47 +16,53 @@ func IsEncodedMessage(data []byte) bool {
 }
 
 // IsValid checks if msg is a valid Message
-func (msg Message) IsValid() (valid bool, reason string) {
+func (msg Message) IsValid() *ErrorExt {
+	mainErr := NewErrorExt("message is invalid")
+
 	switch msg.BOOTPMessageType {
 	case BOOTPMessageTypeRequest, BOOTPMessageTypeReply:
 	default:
-		return false, "invalid bootp message type"
+		mainErr.Add("invalid bootp message type")
 	}
 
 	_, exists := hardwareAddrTypeToString[msg.HardwareAddrType]
 	if !exists {
-		return false, "invalid hardware type"
+		mainErr.Add("invalid hardware type")
 	}
 
 	if msg.HardwareAddrLen != msg.HardwareAddrType.ValidLength() {
-		return false, "hardware address length does not match hardware type"
+		mainErr.Add("hardware address length does not match hardware type")
 	}
 
 	_, exists = flagsToString[msg.Flags]
 	if !exists {
-		return false, "invalid flags"
+		mainErr.Add("invalid flags")
 	}
 
 	switch msg.HardwareAddrType {
 	case HardwareAddrTypeEthernet:
 		if len(msg.ClientHardwareAddr) != 6 {
-			return false, "client hardware address is invalid"
+			mainErr.Add("client hardware address is invalid")
 		}
 	}
 
-	valid, reason = msg.Options.IsValid()
-	if !valid {
-		return false, "options are invalid: " + reason
+	err := msg.Options.IsValid()
+	if err != nil {
+		mainErr.Add(err)
 	}
 
 	msgTypeCode, err := msg.GetMessageType()
 	if err != nil {
-		return false, "option message type is required and must be valid"
+		mainErr.Add("option message type is required and must be valid")
 	}
 
 	if !msgTypeCode.MatchesBOOTPMessageType(msg.BOOTPMessageType) {
-		return false, "bootp message type does not match message type option"
+		mainErr.Add("bootp message type does not match message type option")
 	}
 
-	return true, "ok"
+	if mainErr.HasReasons() {
+		return mainErr
+	}
+
+	return nil
 }

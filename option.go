@@ -18,7 +18,7 @@ type Option struct {
 type OptionData interface {
 	Marshal() ([]byte, error)
 	String() string
-	IsValid() bool
+	IsValid() error
 }
 
 // String returns a verbose, human-readable string from opt
@@ -35,27 +35,28 @@ func (opt Option) String() string {
 // IsValid checks if opt is a valid Option.
 // Will return false if OptionData is nil/invalid or if
 // the type of opt.Data != GlobalOptionCodeMapping.ToDataType[opt.Code]
-func (opt Option) IsValid() (valid bool, reason string) {
+func (opt Option) IsValid() *ErrorExt {
 	dataType := reflect.TypeOf(opt.Data)
+	errPrefix := "Option with OptionCode '" + strconv.Itoa(int(opt.Code)) + "'"
 
 	if opt.Data == nil {
-		return false, "data is nil"
-	}
-	if !opt.Data.IsValid() {
-		return false, "data is invalid"
+		return NewErrorExt(errPrefix + " has nil data")
 	}
 	if dataType != optMap.DefaultDataType && dataType != optMap.ToDataType[opt.Code] {
-		return false, "type of data does not match the OptionCode's assigned type"
+		return NewErrorExt(errPrefix + "is not using it's assigned OptionData type")
+	}
+	if err := opt.Data.IsValid(); err != nil {
+		return NewErrorExt(errPrefix+" has invalid data", err)
 	}
 
-	return true, "ok"
+	return nil
 }
 
 // Marshal returns an encoded Options entry
-func (opt Option) Marshal() ([]byte, error) {
+func (opt Option) Marshal() ([]byte, *ErrorExt) {
 	data, err := opt.Data.Marshal()
 	if err != nil {
-		return nil, fmt.Errorf("error marshalling option. %s", err)
+		return nil, NewErrorExt("error marshalling option", err)
 	}
 	length := len(data)
 	out := make([]byte, 2)

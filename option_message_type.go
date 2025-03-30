@@ -57,17 +57,17 @@ func (optD OptionDataMessageType) String() string {
 }
 
 // IsValid checks if the underlying optD.Type exists as a recognized DHCP Message Type
-func (optD OptionDataMessageType) IsValid() bool {
+func (optD OptionDataMessageType) IsValid() error {
 	if optD.String() == "" {
-		return false
+		return errors.New("data contains an invalid DHCP Message Type")
 	}
-	return true
+	return nil
 }
 
 // Marshal encodes optD as the value for a DHCP Message Type Option
 func (optD OptionDataMessageType) Marshal() ([]byte, error) {
-	if !optD.IsValid() {
-		return nil, errors.New("option data contains an invalid message type")
+	if err := optD.IsValid(); err != nil {
+		return nil, err
 	}
 	return []byte{byte(optD.Type)}, nil
 }
@@ -78,7 +78,7 @@ func UnmarshalOptionDataMessageType(data []byte) (OptionData, error) {
 	msgType := OptionMessageTypeCode(data[0])
 	_, exists := optionMessageTypeCodeToString[msgType]
 	if !exists || len(data) > 1 {
-		return nil, errors.New("invalid message type")
+		return nil, errors.New("data contains an invalid message type")
 	}
 
 	return OptionDataMessageType{Type: msgType}, nil

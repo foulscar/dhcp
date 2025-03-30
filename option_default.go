@@ -1,6 +1,8 @@
 package dhcp
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // OptionDataDefault exists for compatibility.
 // It will simply hold raw data, nothing more
@@ -16,7 +18,7 @@ func (optD OptionDataDefault) String() string {
 
 // IsValid always returns true.
 // OptionDataDefault exists for compatibility and will not check if your data is valid
-func (optD OptionDataDefault) IsValid() bool { return true }
+func (optD OptionDataDefault) IsValid() error { return nil }
 
 // Marshal returns optD.Data and will never return an error.
 // OptionDataDefault exists for compatibility and will not check if your data is valid

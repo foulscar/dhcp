@@ -34,19 +34,19 @@ func (optD OptionDataParameterRequestList) String() string {
 }
 
 // IsValid returns true as long as no requested OptionCodes are OptionCodePad or OptionCodeEnd
-func (optD OptionDataParameterRequestList) IsValid() bool {
+func (optD OptionDataParameterRequestList) IsValid() error {
 	for _, code := range optD.List {
 		if code == OptionCodePad || code == OptionCodeEnd {
-			return false
+			return errors.New("Paramter Request List contains Pad or End OptionCodes")
 		}
 	}
-	return true
+	return nil
 }
 
 // Marshal encodes optD as the value for a DHCP Parameters Request List Option
 func (optD OptionDataParameterRequestList) Marshal() ([]byte, error) {
-	if !optD.IsValid() {
-		return nil, errors.New("option data is invalid")
+	if err := optD.IsValid(); err != nil {
+		return nil, err
 	}
 	data := make([]byte, len(optD.List))
 	for i, optC := range optD.List {
@@ -68,8 +68,8 @@ func UnmarshalOptionDataParameterRequestList(data []byte) (OptionData, error) {
 		list[i] = OptionCode(b)
 	}
 	optData := OptionDataParameterRequestList{List: list}
-	if !optData.IsValid() {
-		return nil, errors.New("data contains an invalid option code")
+	if err := optData.IsValid(); err != nil {
+		return nil, err
 	}
 
 	return optData, nil

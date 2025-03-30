@@ -16,19 +16,23 @@ func (optD OptionDataSubnetMask) String() string {
 }
 
 // IsValid returns true if optD.Mask represents a valid subnet mask
-func (optD OptionDataSubnetMask) IsValid() bool {
+func (optD OptionDataSubnetMask) IsValid() error {
 	if len(optD.Mask) != 4 {
-		return false
+		return errors.New("subnet mask has a len != 4")
 	}
 	ones, bits := optD.Mask.Size()
 
-	return !(ones == 0 && bits == 0)
+	if ones == 0 && bits == 0 {
+		return errors.New("subnet mask is invalid")
+	}
+
+	return nil
 }
 
 // Marshal encodes optD as the value for a DHCP Subnet Mask Option
 func (optD OptionDataSubnetMask) Marshal() ([]byte, error) {
-	if !optD.IsValid() {
-		return nil, errors.New("option data is invalid")
+	if err := optD.IsValid(); err != nil {
+		return nil, err
 	}
 
 	return []byte(optD.Mask), nil
@@ -37,8 +41,8 @@ func (optD OptionDataSubnetMask) Marshal() ([]byte, error) {
 // UnmarshalOptionDataSubnetMask parses data as the value for a DHCP Subnet Mask Option
 func UnmarshalOptionDataSubnetMask(data []byte) (OptionData, error) {
 	optD := OptionDataSubnetMask{Mask: net.IPMask(data)}
-	if !optD.IsValid() {
-		return nil, errors.New("data does not represent an ipv4 subnet mask")
+	if err := optD.IsValid(); err != nil {
+		return nil, err
 	}
 
 	return optD, nil
@@ -52,8 +56,8 @@ func NewOptionSubnetMask(mask net.IPMask) (*Option, error) {
 		Data:      OptionDataSubnetMask{Mask: mask},
 		IsDefault: false,
 	}
-	if !opt.Data.IsValid() {
-		return nil, errors.New("mask is invalid")
+	if err := opt.Data.IsValid(); err != nil {
+		return nil, err
 	}
 
 	return opt, nil

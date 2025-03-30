@@ -2,15 +2,16 @@ package dhcp
 
 import (
 	"encoding/binary"
-	"errors"
 	"net"
 )
 
 // UnmarshalMessage parses the dhcpv4 encoded message from data and returns a pointer to a Message.
 // It will first check if it is a dhcp message but will not test full validity (use Message.IsValid())
-func UnmarshalMessage(data []byte) (*Message, error) {
+func UnmarshalMessage(data []byte) (*Message, *ErrorExt) {
+	mainErr := NewErrorExt("could not unmarshal message from data")
+
 	if !IsEncodedMessage(data) {
-		return nil, errors.New("data does not contain an encoded dhcp message")
+		mainErr.Add("data does not contain an encoded dhcp message")
 	}
 
 	msg := &Message{}
@@ -20,7 +21,7 @@ func UnmarshalMessage(data []byte) (*Message, error) {
 	case BOOTPMessageTypeRequest, BOOTPMessageTypeReply:
 		msg.BOOTPMessageType = BOOTPMessageType(data[0])
 	default:
-		return nil, errors.New("bootp message type is invalid")
+		mainErr.Add("bootp message type is invalid")
 	}
 
 	// HardwareAddrType
@@ -28,12 +29,12 @@ func UnmarshalMessage(data []byte) (*Message, error) {
 	case HardwareAddrTypeEthernet:
 		msg.HardwareAddrType = HardwareAddrType(data[1])
 	default:
-		return nil, errors.New("hardware type is invalid")
+		mainErr.Add("hardware type is invalid")
 	}
 
 	// HardwareAddrLen
 	if uint8(data[2]) != msg.HardwareAddrType.ValidLength() {
-		return nil, errors.New("hardware address length does not match hardware type")
+		mainErr.Add("hardware address length does not match hardware type")
 	}
 	msg.HardwareAddrLen = uint8(data[2])
 
@@ -65,7 +66,7 @@ func UnmarshalMessage(data []byte) (*Message, error) {
 	temp := data[28:44]
 	for _, b := range temp[6:] {
 		if b != 0x00 {
-			return nil, errors.New("client hardware address extends 6 bytes")
+			mainErr.Add("client hardware address extends 6 bytes")
 		}
 	}
 	msg.ClientHardwareAddr = net.HardwareAddr(temp[:6])
@@ -77,8 +78,13 @@ func UnmarshalMessage(data []byte) (*Message, error) {
 	msg.BootFilename = string(data[108:236])
 
 	// Options
-	opts, _ := UnmarshalOptions(data[240:])
+	opts, err := UnmarshalOptions(data[240:])
+	mainErr.Add(err)
 	msg.Options = opts
+
+	if mainErr.HasReasons() {
+		return nil, mainErr
+	}
 
 	return msg, nil
 }

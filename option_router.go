@@ -32,19 +32,19 @@ func (optD OptionDataRouter) String() string {
 
 // IsValid checks if all entries in optD.Routers are unique and valid ipv4 addresses.
 // There must be atleast one entry
-func (optD OptionDataRouter) IsValid() bool {
+func (optD OptionDataRouter) IsValid() error {
 	if len(optD.Routers) < 1 {
-		return false
+		return errors.New("len of routers list is less than 1")
 	}
 	for i, router := range optD.Routers {
 		if len(router) != 4 {
-			return false
+			return errors.New("routers list contains a router that does not have a len of 4")
 		}
 		if router.Equal(net.IPv4zero) {
-			return false
+			return errors.New("routers list contains a router with an addr of 0.0.0.0")
 		}
 		if router[0] == 0x00 {
-			return false
+			return errors.New("routers list contains a router with an addr that starts with 0 (0.*.*.*)")
 		}
 
 		for j, routerB := range optD.Routers {
@@ -52,18 +52,18 @@ func (optD OptionDataRouter) IsValid() bool {
 				continue
 			}
 			if router.Equal(routerB) {
-				return false
+				return errors.New("routers list contains duplicate router addrs")
 			}
 		}
 	}
 
-	return true
+	return nil
 }
 
 // Marshal encodes optD as the value to a DHCP Router Option
 func (optD OptionDataRouter) Marshal() ([]byte, error) {
-	if !optD.IsValid() {
-		return nil, errors.New("option data is invalid")
+	if err := optD.IsValid(); err != nil {
+		return nil, err
 	}
 
 	data := make([]byte, 0)
@@ -87,8 +87,8 @@ func UnmarshalOptionDataRouter(data []byte) (OptionData, error) {
 	}
 
 	optD := OptionDataRouter{Routers: routers}
-	if !optD.IsValid() {
-		return nil, errors.New("one of the addresses is invalid")
+	if err := optD.IsValid(); err != nil {
+		return nil, err
 	}
 
 	return optD, nil
@@ -98,7 +98,7 @@ func UnmarshalOptionDataRouter(data []byte) (OptionData, error) {
 // It will hold OptionDataRouter as the Option's data
 func NewOptionRouter(routers ...net.IP) (*Option, error) {
 	optD := OptionDataRouter{Routers: routers}
-	if !optD.IsValid() {
+	if err := optD.IsValid(); err != nil {
 		return nil, errors.New("one of the addresses is invalid")
 	}
 

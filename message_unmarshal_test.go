@@ -8,12 +8,11 @@ func TestUnmarshalMessage(t *testing.T) {
 	tester := func(t *testing.T, data []byte) {
 		msg, err := UnmarshalMessage(data)
 		if err != nil {
-			t.Errorf("Error unmarshalling. %s", err)
+			t.Error(err.JSON())
 		}
 
-		valid, reason := msg.IsValid()
-		if !valid {
-			t.Errorf("Unmarshalled message is invalid. reason: %s", reason)
+		if validErr := msg.IsValid(); validErr != nil {
+			t.Error(validErr.JSON())
 		}
 	}
 

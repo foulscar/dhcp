@@ -2,11 +2,16 @@ package dhcp
 
 import (
 	"encoding/binary"
-	"fmt"
 )
 
 // MarshalMessage returns the dhcpv4 encoding of msg
-func MarshalMessage(msg *Message) ([]byte, error) {
+func MarshalMessage(msg *Message) ([]byte, *ErrorExt) {
+	mainErr := NewErrorExt("could not marshal message")
+
+	if err := msg.IsValid(); err != nil {
+		mainErr.Add(err)
+	}
+
 	data := make([]byte, 240)
 
 	data[0] = byte(msg.BOOTPMessageType)
@@ -26,8 +31,13 @@ func MarshalMessage(msg *Message) ([]byte, error) {
 	copy(data[236:240], MagicCookie)
 	optsBytes, err := msg.Options.Marshal()
 	if err != nil {
-		return nil, fmt.Errorf("could not marshal message. %s", err)
+		mainErr.Add(err)
 	}
+
+	if mainErr.HasReasons() {
+		return nil, mainErr
+	}
+
 	data = append(data, optsBytes...)
 
 	paddingLen := 0

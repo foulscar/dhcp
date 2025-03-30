@@ -47,8 +47,8 @@ func initMsgSamples(t *testing.T) {
 }
 
 func TestIfNewMessageIsValid(t *testing.T) {
-	valid, reason := NewMessage().IsValid()
-	if !valid {
-		t.Errorf("NewMessage() returns an invalid message. reason: %s", reason)
+	err := NewMessage().IsValid()
+	if err != nil {
+		t.Error(err.JSON())
 	}
 }

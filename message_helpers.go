@@ -1,34 +1,32 @@
 package dhcp
 
-import (
-	"errors"
-)
+import ()
 
 // GetMessageType returns the DHCP Message Type of the Message if the Option exists and is valid
-func (msg Message) GetMessageType() (OptionMessageTypeCode, error) {
+func (msg Message) GetMessageType() (OptionMessageTypeCode, *ErrorExt) {
 	opt, exists := msg.Options[OptionCodeMessageType]
 	if !exists {
-		return OptionMessageTypeCode(0), errors.New("message does not contain the message type option")
+		return OptionMessageTypeCode(0), NewErrorExt("message does not contain the message type option")
 	}
 
 	optData := opt.Data.(OptionDataMessageType)
 	if optData.String() == "" {
-		return OptionMessageTypeCode(0), errors.New("message contains an invalid message type")
+		return OptionMessageTypeCode(0), NewErrorExt("message contains an invalid message type")
 	}
 
 	return optData.Type, nil
 }
 
 // SetMessageType changes or creates an Option for the specified DHCP Message Type
-func (msg Message) SetMessageType(msgType OptionMessageTypeCode) error {
+func (msg Message) SetMessageType(msgType OptionMessageTypeCode) *ErrorExt {
 	_, exists := optionMessageTypeCodeToString[msgType]
 	if !exists {
-		return errors.New("invalid message type")
+		return NewErrorExt("invalid message type")
 	}
 
 	opt, err := NewOptionMessageType(msgType)
 	if err != nil {
-		return err
+		return NewErrorExt(err)
 	}
 	msg.Options.Add(opt)
 
