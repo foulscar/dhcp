@@ -1,13 +1,15 @@
 package dhcp
 
+import "reflect"
+
 // OptionCodeMapping holds maps used for parsing/handling Options.
 // You can create your own if you would like to change the behavior of this package,
 // see GlobalOptionCodeMapping
 type OptionCodeMapping struct {
 	ToString                map[OptionCode]string
-	ToDataType              map[OptionCode]OptionData
+	ToDataType              map[OptionCode]reflect.Type
 	ToDataUnmarshaller      map[OptionCode]OptionDataUnmarshaller
-	DefaultDataType         OptionData
+	DefaultDataType         reflect.Type
 	DefaultDataUnmarshaller OptionDataUnmarshaller
 }
 
@@ -20,7 +22,7 @@ var GlobalOptionCodeMapping = OptionCodeMapping{
 	ToString:                OptionCodeToString,
 	ToDataType:              OptionCodeToDataType,
 	ToDataUnmarshaller:      OptionCodeToDataUnmarshaller,
-	DefaultDataType:         OptionDataDefault{},
+	DefaultDataType:         reflect.TypeOf(OptionDataDefault{}),
 	DefaultDataUnmarshaller: UnmarshalOptionDefault,
 }
 
@@ -34,7 +36,7 @@ func (optCodeMap OptionCodeMapping) GetString(code OptionCode) string {
 // a boolean that is true if returning the default OptionData implementation. If the OptionCode does
 // not have a mapping, the default OptionData implementation will be returned.
 // It will fetch this value from optCodeMap
-func (optCodeMap OptionCodeMapping) GetDataType(code OptionCode) (data OptionData, isDefault bool) {
+func (optCodeMap OptionCodeMapping) GetDataType(code OptionCode) (dataType reflect.Type, isDefault bool) {
 	if code == OptionCodePad || code == OptionCodeEnd {
 		return nil, false
 	}

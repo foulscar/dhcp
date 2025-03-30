@@ -1,5 +1,7 @@
 package dhcp
 
+import "reflect"
+
 // OptionCode represents the type of a DHCP Message Options Entry
 type OptionCode uint8
 
@@ -316,11 +318,11 @@ var OptionCodeToString = map[OptionCode]string{
 // OptionCodeToDataType maps OptionData implementations to their relevant OptionCode.
 // You can change these values before your program's main execution to affect
 // the behavior of this package
-var OptionCodeToDataType = map[OptionCode]OptionData{
-	OptionCodeSubnetMask:           OptionDataSubnetMask{},
-	OptionCodeRouter:               OptionDataRouter{},
-	OptionCodeMessageType:          OptionDataMessageType{},
-	OptionCodeParameterRequestList: OptionDataParameterRequestList{},
+var OptionCodeToDataType = map[OptionCode]reflect.Type{
+	OptionCodeSubnetMask:           reflect.TypeOf(OptionDataSubnetMask{}),
+	OptionCodeRouter:               reflect.TypeOf(OptionDataRouter{}),
+	OptionCodeMessageType:          reflect.TypeOf(OptionDataMessageType{}),
+	OptionCodeParameterRequestList: reflect.TypeOf(OptionDataParameterRequestList{}),
 }
 
 // OptionCodeToDataUnmarshaller maps OptionData constructors to their relevant OptionCode.

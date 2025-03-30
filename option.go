@@ -35,12 +35,20 @@ func (opt Option) String() string {
 // IsValid checks if opt is a valid Option.
 // Will return false if OptionData is nil/invalid or if
 // the type of opt.Data != GlobalOptionCodeMapping.ToDataType[opt.Code]
-func (opt Option) IsValid() bool {
-	if opt.Data == nil || reflect.TypeOf(opt.Data) != reflect.TypeOf(optMap.ToDataType[opt.Code]) || !opt.Data.IsValid() {
-		return false
+func (opt Option) IsValid() (valid bool, reason string) {
+	dataType := reflect.TypeOf(opt.Data)
+
+	if opt.Data == nil {
+		return false, "data is nil"
+	}
+	if !opt.Data.IsValid() {
+		return false, "data is invalid"
+	}
+	if dataType != optMap.DefaultDataType && dataType != optMap.ToDataType[opt.Code] {
+		return false, "type of data does not match the OptionCode's assigned type"
 	}
 
-	return true
+	return true, "ok"
 }
 
 // Marshal returns an encoded Options entry

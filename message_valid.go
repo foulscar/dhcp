@@ -44,8 +44,9 @@ func (msg Message) IsValid() (valid bool, reason string) {
 		}
 	}
 
-	if !msg.Options.IsValid() {
-		return false, "options are invalid"
+	valid, reason = msg.Options.IsValid()
+	if !valid {
+		return false, "options are invalid: " + reason
 	}
 
 	msgTypeCode, err := msg.GetMessageType()

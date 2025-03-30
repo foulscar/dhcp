@@ -2,6 +2,7 @@ package dhcp
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -50,14 +51,36 @@ func (opts Options) Contains(code OptionCode) bool {
 }
 
 // IsValid returns true if all Option Entries in opts are valid
-func (opts Options) IsValid() bool {
-	for _, opt := range opts {
-		if !opt.IsValid() {
-			return false
+func (opts Options) IsValid() (valid bool, reason string) {
+	invalidReasons := make([]string, 0)
+	for code, opt := range opts {
+		valid, reason := opt.IsValid()
+		if !valid {
+			invalidReasons = append(
+				invalidReasons, "OptionCode '"+
+					strconv.Itoa(int(code))+
+					"' is invalid. reason: "+
+					reason,
+			)
 		}
 	}
 
-	return true
+	if len(invalidReasons) == 0 {
+		return true, "ok"
+	}
+
+	sb := strings.Builder{}
+
+	sb.WriteString("[")
+	for i, reason := range invalidReasons {
+		if i != 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(reason)
+	}
+	sb.WriteString("]")
+
+	return false, sb.String()
 }
 
 // GetDefaults returns a slice of all OptionCodes present in opts that are using default data handling.
@@ -89,10 +112,10 @@ func (opts Options) GetNonDefaults() []OptionCode {
 func (opts Options) Marshal() ([]byte, error) {
 	var data []byte
 	for _, opt := range opts {
-		valid := opt.IsValid()
+		valid, reason := opt.IsValid()
 		optData, err := opt.Data.Marshal()
 		if !valid || err != nil {
-			return nil, fmt.Errorf("could not marshal options. option with code '%d' is invalid", int(opt.Code))
+			return nil, fmt.Errorf("could not marshal options. option with code '%d' is invalid. reason: %s", int(opt.Code), reason)
 		}
 		data = append(data, byte(opt.Code))
 		data = append(data, byte(len(optData)))
