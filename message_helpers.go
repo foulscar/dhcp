@@ -19,11 +19,6 @@ func (msg Message) GetMessageType() (OptionMessageTypeCode, *ErrorExt) {
 
 // SetMessageType changes or creates an Option for the specified DHCP Message Type
 func (msg Message) SetMessageType(msgType OptionMessageTypeCode) *ErrorExt {
-	_, exists := optionMessageTypeCodeToString[msgType]
-	if !exists {
-		return NewErrorExt("invalid message type")
-	}
-
 	opt, err := NewOptionMessageType(msgType)
 	if err != nil {
 		return NewErrorExt(err)

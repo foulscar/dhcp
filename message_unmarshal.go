@@ -12,6 +12,7 @@ func UnmarshalMessage(data []byte) (*Message, *ErrorExt) {
 
 	if !IsEncodedMessage(data) {
 		mainErr.Add("data does not contain an encoded dhcp message")
+                return nil, mainErr
 	}
 
 	msg := &Message{}

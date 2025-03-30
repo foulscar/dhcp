@@ -10,6 +10,7 @@ func MarshalMessage(msg *Message) ([]byte, *ErrorExt) {
 
 	if err := msg.IsValid(); err != nil {
 		mainErr.Add(err)
+                return nil, mainErr
 	}
 
 	data := make([]byte, 240)
@@ -29,15 +30,7 @@ func MarshalMessage(msg *Message) ([]byte, *ErrorExt) {
 	copy(data[44:108], msg.ServerHostname)
 	copy(data[108:236], msg.BootFilename)
 	copy(data[236:240], MagicCookie)
-	optsBytes, err := msg.Options.Marshal()
-	if err != nil {
-		mainErr.Add(err)
-	}
-
-	if mainErr.HasReasons() {
-		return nil, mainErr
-	}
-
+	optsBytes, _ := msg.Options.Marshal()
 	data = append(data, optsBytes...)
 
 	paddingLen := 0
