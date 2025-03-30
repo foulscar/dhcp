@@ -5,6 +5,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/foulscar/dhcp"
@@ -29,15 +30,15 @@ func (optD OptionDataVendorABC) String() string {
 	return "Unknown Tag"
 }
 
-func (optD OptionDataVendorABC) IsValid() bool {
+func (optD OptionDataVendorABC) IsValid() error {
 	switch optD.Tag {
 	case "cat":
-		return true
+		return nil
 	case "dog":
-		return true
+		return nil
 	}
 
-	return false
+	return errors.New("data contains invalid tag")
 }
 
 func (optD OptionDataVendorABC) Marshal() ([]byte, error) {
@@ -50,7 +51,7 @@ func UnmarshalOptionDataVendorABC(data []byte) (dhcp.OptionData, error) {
 
 func NewOptionVendorABC(tag string) (*dhcp.Option, error) {
 	data := OptionDataVendorABC{Tag: tag}
-	if !data.IsValid() {
+	if err := data.IsValid(); err != nil {
 		return nil, fmt.Errorf("invalid tag: '%s'", tag)
 	}
 

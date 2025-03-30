@@ -25,21 +25,20 @@ func main() {
 
 	msgA.AddOptions(ourOpt)
 
-	valid, reason := msgA.IsValid()
-	if !valid {
-		fmt.Println("msgA is invalid.", reason)
+	if err := msgA.IsValid(); err != nil {
+		fmt.Println("msgA is invalid.", err)
 		os.Exit(1)
 	}
 
-	rawData, err := dhcp.MarshalMessage(&msgA)
-	if err != nil {
-		fmt.Println("error marshalling msgA.", err)
+	rawData, errA := dhcp.MarshalMessage(&msgA)
+	if errA != nil {
+		fmt.Println("error marshalling msgA.", errA)
 		os.Exit(1)
 	}
 
-	msgB, err := dhcp.UnmarshalMessage(rawData)
-	if err != nil {
-		fmt.Println("error unmarshalling msgB.", err)
+	msgB, errB := dhcp.UnmarshalMessage(rawData)
+	if errB != nil {
+		fmt.Println("error unmarshalling msgB.", errB)
 		os.Exit(1)
 	}
 

@@ -12,14 +12,13 @@ func main() {
 		panic(err)
 	}
 
-	msg, err := dhcp.UnmarshalMessage(data)
-	if err != nil {
-		panic(err)
+	msg, msgErr := dhcp.UnmarshalMessage(data)
+	if msgErr != nil {
+		panic(msgErr)
 	}
 
-	valid, reason := msg.IsValid()
-	if !valid {
-		fmt.Println("message is invalid. reason:", reason)
+	if err := msg.IsValid(); err != nil {
+		fmt.Println("message is invalid.", err)
 		os.Exit(1)
 	}
 
