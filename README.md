@@ -20,4 +20,5 @@ go get github.com/foulscar/dhcp@LATEST_STABLE_TAG_HERE
 Below are examples showcasing various usecases
 
 - [Basic Listening and Decoding](examples/dummy_listener)
+- [Reading From a Dump File](examples/read_from_dump)
 - [Implementing Custom Options/Handlers](examples/vendor_specific)
