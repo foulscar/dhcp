@@ -6,6 +6,7 @@ package main
 
 import (
 	"github.com/foulscar/dhcp"
+	"reflect"
 )
 
 // Here we modify the global OptionCodeMapping.
@@ -15,6 +16,6 @@ func modifyGlobalMapping() {
 	optCodeMap := &dhcp.GlobalOptionCodeMapping
 
 	optCodeMap.ToString[OptionCodeVendorABC] = "Vendor ABC Specific Option"
-	optCodeMap.ToDataType[OptionCodeVendorABC] = OptionDataVendorABC{}
+	optCodeMap.ToDataType[OptionCodeVendorABC] = reflect.TypeOf(OptionDataVendorABC{})
 	optCodeMap.ToDataUnmarshaller[OptionCodeVendorABC] = UnmarshalOptionDataVendorABC
 }

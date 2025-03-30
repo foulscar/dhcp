@@ -44,7 +44,7 @@ func main() {
 	}
 
 	fmt.Print("This is our original message (msgA):\n\n")
-	fmt.Print(msgA,"\n\n")
+	fmt.Print(msgA, "\n\n")
 
 	fmt.Print("This is our message after marshalling then unmarshalling (msgB):\n\n")
 	fmt.Println(*msgB)
