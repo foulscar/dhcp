@@ -19,7 +19,7 @@ func (e ErrorExt) Error() string {
 	sb := strings.Builder{}
 	sb.WriteString(e.Main)
 
-	if e.Reasons == nil || len(e.Reasons) < 1 {
+	if !e.HasReasons() {
 		return sb.String()
 	}
 
@@ -47,7 +47,7 @@ func (e ErrorExt) JSON() string {
 	sb.WriteString("{")
 
 	sb.WriteString(`"error":` + `"` + e.Main + `"`)
-	if e.Reasons != nil && len(e.Reasons) > 0 {
+	if e.HasReasons() {
 		sb.WriteString(`,"reasons":[`)
 		for i, err := range e.Reasons {
 			if i > 0 {
@@ -76,7 +76,7 @@ func (e ErrorExt) Add(args ...any) {
 
 // HasReasons returns true if the ErrorExt contains reasons on why the error occurred
 func (e ErrorExt) HasReasons() bool {
-	if len(e.Reasons) == 0 {
+	if e.Reasons == nil || len(e.Reasons) == 0 {
 		return false
 	}
 	return true
